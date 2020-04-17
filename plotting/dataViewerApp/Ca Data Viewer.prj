@@ -1,0 +1,102 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration build-checksum="2054726025" file="C:\PostDoc Docs\code\matlab\Two_photon_imaging\plotting\Ca Data Viewer.prj" location="C:\PostDoc Docs\code\matlab\Two_photon_imaging\plotting" name="Ca Data Viewer" target="target.mlapps" target-name="Package App">
+    <param.appname>Ca Data Viewer</param.appname>
+    <param.authnamewatermark>Michael Savage</param.authnamewatermark>
+    <param.email>msavage@uabmc.edu</param.email>
+    <param.company />
+    <param.icon />
+    <param.icons />
+    <param.summary>Basic data viewer for all calcium imaging</param.summary>
+    <param.description />
+    <param.screenshot>C:\Users\msavage1\AppData\Local\Temp\tp06f0fbee_c08a_419e_b0d8_572e8bd8fc6a.png</param.screenshot>
+    <param.version>1.0</param.version>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.output>C:\PostDoc Docs\code\matlab\Two_photon_imaging_clean\plotting\dataViewerApp</param.output>
+    <param.guid>ec2e4fc5-d190-40e6-a12d-7a48dd2667b0</param.guid>
+    <unset>
+      <param.company />
+      <param.icon />
+      <param.icons />
+      <param.description />
+      <param.version />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\Ca_Data_Viewer.mlapp</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>C:\PostDoc Docs\code\matlab\Two_photon_imaging_clean\plotting\utilities\distinguishable_colors.m</file>
+      <file>C:\PostDoc Docs\code\matlab\Two_photon_imaging_clean\plotting\utilities\shadedErrorBarV2.m</file>
+      <file>C:\PostDoc Docs\code\matlab\Two_photon_imaging_clean\plotting\utilities\vline2.m</file>
+      <file>C:\PostDoc Docs\code\matlab\Two_photon_imaging_clean\utilities\read_Tiffs.m</file>
+    </fileset.depfun>
+    <fileset.resources />
+    <fileset.package />
+    <build-deliverables>
+      <file location="C:\PostDoc Docs\code\matlab\Two_photon_imaging_clean\plotting" name="dataViewerApp" optional="false">C:\PostDoc Docs\code\matlab\Two_photon_imaging_clean\plotting\dataViewerApp</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2020a</root>
+      <toolboxes>
+        <toolbox name="matlabcoder" />
+        <toolbox name="embeddedcoder" />
+        <toolbox name="gpucoder" />
+        <toolbox name="fixedpoint" />
+        <toolbox name="matlabhdlcoder" />
+        <toolbox name="neuralnetwork" />
+      </toolboxes>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+      <toolbox>
+        <gpucoder>
+          <enabled>true</enabled>
+        </gpucoder>
+      </toolbox>
+      <toolbox>
+        <fixedpoint>
+          <enabled>true</enabled>
+        </fixedpoint>
+      </toolbox>
+      <toolbox>
+        <matlabhdlcoder>
+          <enabled>true</enabled>
+        </matlabhdlcoder>
+      </toolbox>
+      <toolbox>
+        <neuralnetwork>
+          <enabled>true</enabled>
+        </neuralnetwork>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.0</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
