@@ -25,7 +25,8 @@ function polarPlotOrientation(filepath, cellNo, noOrientations, angleMax, second
 
 %% set defaults
 
-if ~isstruct(filepath) % variable is filepath
+% gets the experimentStructure
+if ~isobject(filepath)
     try
         load(filepath, '-mat');
         filePath2Use = dir(filepath);

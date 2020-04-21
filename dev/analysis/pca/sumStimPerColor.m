@@ -19,7 +19,8 @@ function experimentStructure = sumStimPerColor(filepath, data2Use, secondCndDime
 
 %% Defaults
 
-if ~isstruct(filepath) % variable is filepath
+% gets the experimentStructure
+if ~isobject(filepath)
     try
         load(filepath, '-mat');
         filePath2Use = dir(filepath);

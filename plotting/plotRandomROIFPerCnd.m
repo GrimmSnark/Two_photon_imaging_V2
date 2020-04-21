@@ -42,7 +42,7 @@ function plotRandomROIFPerCnd(filepath, channel2Use, noOrientations, angleMax, s
 %% set defaults
 
 % gets the experimentStructure
-if ~isstruct(filepath)
+if ~isobject(filepath)
     try
         load(filepath, '-mat');
         filePath2Use = dir(filepath);
@@ -124,7 +124,7 @@ files = dir([experimentStructure.savePath 'STD_Average*']);
 if size(files,1) ==1 % if single channel recording
     imageROI = read_Tiffs([experimentStructure.savePath 'STD_Average.tif'],1); % reads in average image
     imageROI = uint16(mat2gray(imageROI)*65535);
-    imageROI = imadjust(imageROI); % saturate image to make neural net prediction better
+%     imageROI = imadjust(imageROI); % saturate image to make neural net prediction better
 end
 
 %  if multiple channels load in/ build image
@@ -169,7 +169,7 @@ if size(files,1) >1 % if multiple channel recording
     end
     
     
-    imageROI = imadjust(imageROI); % saturate image to make neural net prediction better
+%     imageROI = imadjust(imageROI); % saturate image to make neural net prediction better
 end
 
 

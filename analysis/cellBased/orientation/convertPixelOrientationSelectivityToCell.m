@@ -28,7 +28,8 @@ function convertPixelOrientationSelectivityToCell(filepath, noOrientations, angl
 % Allows for the folder2Process to be not the one set in
 % experimentStructure.savePath
 
-if ~isstruct(filepath) % variable is filepath
+% gets the experimentStructure
+if ~isobject(filepath)
     try
         load(filepath, '-mat');
         filePath2Use = dir(filepath);
@@ -41,7 +42,6 @@ else % if variable is the experimentStructure
     experimentStructure = filepath;
     clearvars filepath
 end
-
 
 if nargin <2 || isempty(noOrientations)
     noOrientations = 8;
