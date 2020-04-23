@@ -1,5 +1,6 @@
 function rgbImg = convertIndexImage2RGB(indxImg, colormap)
-% Function to convert indexed image to rgb without any scaling issues
+% Function to convert indexed image to rgb without any scaling issues. NB
+% This function normalises per image!!
 % Inputs - indxImg: imdex image array
 %          colormap: colormap to use
 
