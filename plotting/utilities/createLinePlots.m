@@ -68,9 +68,9 @@ for p = 1:length(data) % for each line
         %% format the axis
         axis on
         % y axis
-        yticks(experimentStructure.stimOnFrames(1)+1:frameEq5sec: size(imageCndMeanRGB,1));
+        yticks(experimentStructure.stimOnFrames(1):frameEq5sec: size(imageCndMeanRGB,1));
         yticklabels(0:5:35);
-        hline([experimentStructure.stimOnFrames+1], 'g--');
+        hline([experimentStructure.stimOnFrames(1) experimentStructure.stimOnFrames(2)+0.5], 'g--');
         ylabel('Time since Stim On (s)');
         
         % x axis

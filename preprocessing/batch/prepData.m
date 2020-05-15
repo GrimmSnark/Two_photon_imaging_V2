@@ -8,7 +8,7 @@ function prepData(directory, loadMetadata, registrationType, saveRegMovie, exper
 %
 %        registrationType- DFT-based subpixel method ('subMicronMethod')
 %                        - non-rigid DFT subpixel registration ('nonRigid')
-%                        - Leave blank if you do NOT want to register%
+%                        - Leave blank if you do NOT want to register
 %
 %        saveRegMovie: flag for save registered movie file, not necessary
 %        and takes up time/space 0 = not saved, 1 = saved
@@ -66,7 +66,6 @@ if length(channelNo)>1
     volSplit =  reshape(vol,size(vol,1),size(vol,2),[], length(channelNo));
 end
 
-
 if isfield( experimentStructure, 'micronsPerPixel')
     micronsPerPix = experimentStructure.micronsPerPixel(1,1);
 else
@@ -76,6 +75,53 @@ end
 %% load in trial data 
 if experimentFlag == 1
     experimentStructure = prepTrialData(experimentStructure);
+end
+
+%% check if there is a mismatch between trial data size and imaging data size and restrict event data
+
+% get imaging data size
+if length(channelNo)> 1
+    imagingSize = size(vol,3)/2;
+else
+    imagingSize = size(vol,3);
+end
+
+% get trial event length in frames
+trialInfoSize = experimentStructure.EventFrameIndx.TRIAL_END(end);
+
+% if the event frame size is largerr that the data, restrict block number
+% used to that smaller than imaging data
+if trialInfoSize> imagingSize
+    
+    % find block change trials
+    changeBlocks = find(experimentStructure.block(2:end,2)- experimentStructure.block(1:end-1,2)) +1;
+    
+    % find block change smaller than imaging size
+    lastImagingTrial = find(imagingSize<experimentStructure.EventFrameIndx.TRIAL_END);
+    lastImagingTrial = lastImagingTrial(1)-1;
+    
+    % find last full imaging block
+    lastImagingBlock = find(lastImagingTrial < changeBlocks)-1;
+    
+    
+    % restrict all events to the max of last imaging block
+    lastCndNo = changeBlocks(lastImagingBlock)-1;
+    
+    experimentStructure.cndTotal = ones(size( experimentStructure.cndTotal)) * lastImagingBlock;
+    experimentStructure.block(lastCndNo+1:end,:) = [];
+    
+    for cc = 1:length(experimentStructure.cndTrials)
+        experimentStructure.cndTrials{cc} = experimentStructure.cndTrials{cc}(experimentStructure.cndTrials{cc} <= lastCndNo);
+    end
+    
+    for qq = 1:length(experimentStructure.nonEssentialEvent)
+        experimentStructure.nonEssentialEvent{2,qq} = experimentStructure.nonEssentialEvent{2,qq}(:,:,1:lastCndNo);
+    end
+    
+    eventFields = fieldnames(experimentStructure.EventFrameIndx);
+    for aa = 1:length(eventFields)
+        experimentStructure.EventFrameIndx.(eventFields{aa}) = experimentStructure.EventFrameIndx.(eventFields{aa})(1:lastCndNo);
+    end
 end
 
 %% Image motion correction and registration

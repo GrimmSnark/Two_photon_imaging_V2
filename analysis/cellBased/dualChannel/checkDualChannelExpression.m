@@ -13,7 +13,7 @@ function checkDualChannelExpression(data, channel2Check)
 %% Defaults
 
 % get data in
-if ~isstruct(data) % variable is filepath
+if ~isobject(data) % variable is filepath
     try
         load(data, '-mat');
     catch

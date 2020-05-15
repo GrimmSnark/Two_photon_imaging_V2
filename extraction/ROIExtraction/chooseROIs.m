@@ -36,7 +36,7 @@ if useNetSegementation == 1
         splitPath = split(tempPath,'\');
         
         % find root dir location
-        rootDirName = 'Two_photon_imaging_clean';
+        rootDirName = 'Two_photon_imaging_V2';
         indexMatch = find(ismember(splitPath, rootDirName));
         
         % create string for root dir

@@ -9,13 +9,17 @@ function experimentStructure = splitDFIntoConditions(experimentStructure)
 
 
 %% get trial length and stim on frame lengths
-analysisFrameLength = ceil(mean(experimentStructure.EventFrameIndx.TRIAL_END - experimentStructure.EventFrameIndx.PRESTIM_ON));
+analysisFrameLength = round(mean(experimentStructure.EventFrameIndx.TRIAL_END - experimentStructure.EventFrameIndx.PRESTIM_ON));
 stimOnFrames = [ceil(mean(experimentStructure.EventFrameIndx.STIM_ON - experimentStructure.EventFrameIndx.PRESTIM_ON))+1 ...
     ceil(mean(experimentStructure.EventFrameIndx.STIM_OFF - experimentStructure.EventFrameIndx.PRESTIM_ON))-1];
 
 experimentStructure.meanFrameLength = analysisFrameLength; % saves the analysis frame length into structure, just FYI
 experimentStructure.stimOnFrames = stimOnFrames; % saves the frame index for the trial at which stim on and off occured, ie [7 14] from prestim on
 
+% clear any previous
+experimentStructure.dFperCnd = [];
+experimentStructure.dFperCndFBS = [];
+experimentStructure.rawFperCnd = [];
 
 %% chunks up dF into cell x cnd x trial
 for p = 1:experimentStructure.cellCount % for each cell

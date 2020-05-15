@@ -14,7 +14,7 @@ function eventArray = readEventFilePrairie(dataFilepath, keyFilepath)
 
 %% set up
 if nargin <2 || isempty(keyFilepath)
-    keyFilepath='C:\PostDoc Docs\code\matlab\Two_photon_imaging_clean\preprocessing\metaDataExtraction\PrairieVoltageInfo.mat';
+    keyFilepath='C:\PostDoc Docs\code\matlab\Two_photon_imaging_V2\preprocessing\metaDataExtraction\PrairieVoltageInfo.mat';
 end
 
 plotRawPeaks = 0; % set to 1 to view raw peak detection

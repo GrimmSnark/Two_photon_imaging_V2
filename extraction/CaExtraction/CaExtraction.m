@@ -44,11 +44,13 @@ if length(channelNo)>1
     vol = volSplit(:,:,:,channel2Use);
 end
 
-% apply imageregistration shifts
+% apply imageregistration shifts if there are shifts to apply
 if isprop(experimentStructure, 'options_nonrigid') && ~isempty(experimentStructure.options_nonrigid) % if using non rigid correctionn
     registeredVol = apply_shifts(vol,experimentStructure.xyShifts,experimentStructure.options_nonrigid);
-else
+elseif  ~isempty(experimentStructure.xyShifts)
     registeredVol = shiftImageStack(vol,experimentStructure.xyShifts([2 1],:)'); % Apply actual shifts to tif stack
+else % if there are no motion correction options, ie the image stack loaded is already motion corrected
+    registeredVol = vol;
 end
 
 % transfers to FIJI

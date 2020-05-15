@@ -285,8 +285,10 @@ end
 % apply imageregistration shifts
 if isprop(experimentStructure, 'options_nonrigid') && ~isempty(experimentStructure.options_nonrigid) % if using non rigid correctionn
     registeredVol = apply_shifts(vol,experimentStructure.xyShifts,experimentStructure.options_nonrigid);
-else
+elseif  ~isempty(experimentStructure.xyShifts)
     registeredVol = shiftImageStack(vol,experimentStructure.xyShifts([2 1],:)'); % Apply actual shifts to tif stack
+else % if there are no motion correction options, ie the image stack loaded is already motion corrected
+    registeredVol = vol;
 end
 
 % transfers to FIJI

@@ -146,10 +146,13 @@ if size(files,1) >1 % if multiple channel recording
     
     % get the image matrix and rescale to use the full 16bit
     imageROI = MIJ.getImage('MAX_Channel Stack');
+    MIJ.close;
     imageROI = uint16(mat2gray(imageROI)*65535);
     
     % save image
-    saveastiff(imageROI, [experimentStructure.savePath 'Max_Project.tif']);
+    if ~exist([experimentStructure.savePath 'Max_Project.tif'])
+        saveastiff(imageROI, [experimentStructure.savePath 'Max_Project.tif']);
+    end
     
     %     imageROI = imadjust(imageROI); % saturate image to make neural net prediction better
 end
@@ -157,18 +160,15 @@ end
 
 % get image to FIJI
 MIJImageROI = MIJ.createImage('ROI_image',imageROI,true); %#ok<NASGU> supressed warning as no need to worry about
+ij.process.ImageConverter(MIJImageROI).convertToRGB;
 
-% set window size and make the image easier to view
-WaitSecs(0.2);
-ij.IJ.run('Set... ', ['zoom=' num2str(magSize) ' x=10 y=50']);
-ij.IJ.run('Enhance Contrast', 'saturated=0.35');
 
 % load in pixel preference images if they exist
-pixelSelectivityImages = dir([experimentStructure.savePath 'Pixel Orientation Pref_native*']);
+pixelPrefImages = dir([experimentStructure.savePath 'Pixel Orientation Pref_native*']);
 
 % get all the FIJI stuff for each image
-for i =1:length(pixelSelectivityImages)
-    eval(['imp' num2str(i) '= ij.IJ.openImage([experimentStructure.savePath pixelSelectivityImages(' num2str(i) ').name]);']);
+for i =1:length(pixelPrefImages)
+    eval(['imp' num2str(i) '= ij.IJ.openImage([experimentStructure.savePath pixelPrefImages(' num2str(i) ').name]);']);
     eval(['processor' num2str(i) '= imp' num2str(i) '.getProcessor();']);
 end
 
@@ -176,15 +176,44 @@ end
 pixelPrefStack = ij.ImageStack(imp1.getWidth, imp1.getHeight);
 
 % fill stack with images
-for i =1:length(pixelSelectivityImages)
+for i =1:length(pixelPrefImages)
     eval(['pixelPrefStack.addSlice(imp' num2str(i) '.getTitle, processor' num2str(i) ');']);
 end
 
 % display stack
 stackImagePlusObj = ij.ImagePlus('Pixel Orientation Stack.tif', pixelPrefStack);
 stackImagePlusObj.show; 
+ij.process.ImageConverter(stackImagePlusObj).convertToRGB;
+
+
+% load in pixel selectivity images if they exist
+pixelSelectivityImages = dir([experimentStructure.savePath 'Pixel Orientation Selectivity_native*LCS.tif']);
+
+% get all the FIJI stuff for each image
+for i =1:length(pixelSelectivityImages)
+    eval(['imp' num2str(i) '= ij.IJ.openImage([experimentStructure.savePath pixelSelectivityImages(' num2str(i) ').name]);']);
+    eval(['processorSelect' num2str(i) '= imp' num2str(i) '.getProcessor();']);
+end
+
+% create empty stack
+pixelSelectivityStack = ij.ImageStack(imp1.getWidth, imp1.getHeight);
+
+% fill stack with images
+for i =1:length(pixelSelectivityImages)
+    eval(['pixelSelectivityStack.addSlice(imp' num2str(i) '.getTitle, processorSelect' num2str(i) ');']);
+end
+
+% display stack
+stackImagePlusObjSelect = ij.ImagePlus('Pixel Pref Stack.tif', pixelSelectivityStack);
+stackImagePlusObjSelect.show; 
+ij.process.ImageConverter(stackImagePlusObjSelect).convertToRGB;
+
+
+MIJ.run("Concatenate...", "  title=[Full Stack] open image1=ROI_image image2=[Pixel Orientation Stack.tif] image3=[Pixel Pref Stack.tif]");
+% set window size and make the image easier to view
 WaitSecs(0.2);
-ij.IJ.run('Set... ', ['zoom=' num2str(magSize) ' x=500 y=50']);
+ij.IJ.run('Set... ', ['zoom=' num2str(magSize) ' x=10 y=50']);
+ij.IJ.run('Enhance Contrast', 'saturated=0.35');
 
 % open ROI tool
 MIJ.run("Cell Magic Wand Tool");
@@ -194,9 +223,9 @@ ij.IJ.runMacro('setTool("line");');
 
 % Check if there are already ROIs selected for this recording
 
-if exist([experimentStructure.savePath 'ROILines.zip'], 'file')
+if exist([experimentStructure.savePath 'RawLinePic\LineROIs.zip'], 'file')
     disp([experimentStructure.savePath  ' contains a valid ROI file!']);
-    RC.runCommand('Open', [experimentStructure.savePath 'ROILines.zip']); % opens ROI file
+    RC.runCommand('Open', [experimentStructure.savePath 'RawLinePic\LineROIs.zip']); % opens ROI file
     
     % Query user if you want to use previously chosen ROIs
     answer = MFquestdlg([0.5,0.5], 'Would you like to load previously chosen line ROIs?', ...
@@ -264,10 +293,11 @@ end
 % apply imageregistration shifts
 if isprop(experimentStructure, 'options_nonrigid') && ~isempty(experimentStructure.options_nonrigid) % if using non rigid correctionn
     registeredVol = apply_shifts(vol,experimentStructure.xyShifts,experimentStructure.options_nonrigid);
-else
+elseif  ~isempty(experimentStructure.xyShifts)
     registeredVol = shiftImageStack(vol,experimentStructure.xyShifts([2 1],:)'); % Apply actual shifts to tif stack
+else % if there are no motion correction options, ie the image stack loaded is already motion corrected
+    registeredVol = vol;
 end
-
 % transfers to FIJI
 registeredVolMIJI = MIJ.createImage( 'Registered Volume', registeredVol,true);
 
@@ -297,6 +327,7 @@ analysisFrameLength = experimentStructure.meanFrameLength ;
 
 %% chunks up rawF into cell x cnd x trial
 runningMax = 0;
+runningMin = 1;
 for p = 1:ROInumber % for each new ROI
     for  x =1:length(experimentStructure.cndTotal) % for each condition
         if any(experimentStructure.cndTotal(x)) % checks if there are any trials of that type
@@ -316,12 +347,18 @@ for p = 1:ROInumber % for each new ROI
     if max(rawFperCndAverages{p}(:)) > runningMax
         runningMax =  max(rawFperCndAverages{p}(:));
     end
+    
+    if min(rawFperCndAverages{p}(:)) < runningMin
+        runningMin =  min(rawFperCndAverages{p}(:));
+    end
 end
+
+logMin = log(runningMin);
 
 % normalize to max of all average responses across all lines
 for p = 1:ROInumber % for each new ROI
     rawFperCndAveragesNorm{p} = rawFperCndAverages{p}/runningMax;
-    rawFperCndAveragesLogNorm{p} = (log(rawFperCndAverages{p}))/(log(2^16));
+    rawFperCndAveragesLogNorm{p} = (log(rawFperCndAverages{p})-logMin)/(log(2^13)-logMin);
 end
 %% plotting
 
