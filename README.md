@@ -40,6 +40,6 @@ Stimulus computer setup:
 
 Now you can run stimulus experiment code from the PTB_Experiments folder.
 
-Please refer to the documents in the "Doc" folder for more setu pand usage information
+Please refer to the documents in the "Doc" folder for more setup and usage information
 
 Any questions please email msavage@uabmc.edu
