@@ -1,4 +1,4 @@
-function plotOrientationTuningPerCell(filepath, cellNo, noOrientations, angleMax, plotPrefCndTraces, secondCndDimension,  useSTDorSEM, data2Use, secondCndDimensionLabels )
+function plotOrientationTuningPerCell(filepath, cellNo, noOrientations, angleMax, plotPrefCndTraces, secondCndDimension,  useSTDorSEM, data2Use, axisLims, secondCndDimensionLabels )
 % plots and saves figure for cells with preferred stimulus average (with
 % individual trial and the average responses for each condition.
 %
@@ -30,6 +30,8 @@ function plotOrientationTuningPerCell(filepath, cellNo, noOrientations, angleMax
 %          data2Use - specify the type of data to use
 %                     FBS- first before stimulus subtraction (For LCS)
 %                     Neuro_corr- Neuropil corrected based subtraction
+%
+%          axisLims - Set y-axis limits for plots [min max]
 %
 %          secondCndDimensionLabels - This should be a cell string array
 %                                     for labels of the second dimension. 
@@ -94,12 +96,16 @@ if nargin < 8 || isempty(data2Use)
     data2Use = 'FBS';
 end
 
+if nargin < 9 || isempty(axisLims)
+    axisLims = [];
+end
+
 % sort out second dimension labels....This is still under development
 % if there are more than one dimension apart from orientation
 if secondCndDimension > 1
     
     % checks if the label field is empty and sets to default
-    if nargin < 9 || isempty(secondCndDimensionLabels)
+    if nargin < 10 || isempty(secondCndDimensionLabels)
         secondCndDimensionLabels = {'NHP_Color'};
     end
     
@@ -208,16 +214,21 @@ for i =cellNo
     %% plot averages for all conditions
     
     % get max and min data for limiting axes
-    if useSTDorSEM == 1
-        maxData = trialTracesMean + errorBarTraces;
-        maxData = max(maxData(:));
-        minData = trialTracesMean - errorBarTraces;
-        minData = min(minData(:));
-    elseif useSTDorSEM ==2
-        maxData = trialTracesMean + (errorBarTraces/2);
-        maxData = max(maxData(:));
-        minData = trialTracesMean - (errorBarTraces/2);
-        minData = min(minData(:));
+    if isempty(axisLims)
+        if useSTDorSEM == 1
+            maxData = trialTracesMean + errorBarTraces;
+            maxData = max(maxData(:));
+            minData = trialTracesMean - errorBarTraces;
+            minData = min(minData(:));
+        elseif useSTDorSEM ==2
+            maxData = trialTracesMean + (errorBarTraces/2);
+            maxData = max(maxData(:));
+            minData = trialTracesMean - (errorBarTraces/2);
+            minData = min(minData(:));
+        end
+    else
+        minData = axisLims(1);
+        maxData = axisLims(2);
     end
     
     
@@ -275,6 +286,11 @@ for i =cellNo
         curentLineCol = lineCol(current2ndDim,:);
         shadedErrorBarV2(xlocations(x,:), trialTracesMean(:,x)', errorBarsPlot, 'lineprops' , {'color',[curentLineCol]});
         prev2ndDim = current2ndDim;
+        
+        % add zero line
+         if rem(x,noOrientations) == 0
+            hline(0,'k--','');
+        end
     end
     tightfig;
     
