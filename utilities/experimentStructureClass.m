@@ -482,7 +482,7 @@ classdef experimentStructureClass < dynamicprops
             try
                 [varargout{1:nargout}] = builtin('subsref',obj,s);
             catch ME
-                error([ME.message ' If ''' s.subs ''' is a property/variable please make sure that it has been created with .addprop() first.']);
+                error([ME.message ' If ''' s.subs ''' is a property/variable please make sure that it has been created with .addprop(''' s.subs ''') first.']);
             end
         end
         
@@ -492,7 +492,7 @@ classdef experimentStructureClass < dynamicprops
             try
                 obj = builtin('subsasgn',obj,s,varargin{:});
             catch ME
-                error([ME.message ' Use .addprop() to create the property/variable before assigning it.']);
+                error([ME.message ' Use .addprop(''' s.subs ''') to create the property/variable before assigning it.']);
             end
         end
     end
