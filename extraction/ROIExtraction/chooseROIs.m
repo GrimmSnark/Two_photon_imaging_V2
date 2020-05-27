@@ -103,7 +103,9 @@ if size(files,1) >1 % if multiple channel recording
     imageROI = uint16(mat2gray(imageROI)*65535);
     
     % save image
-    saveastiff(imageROI, [folder2Process 'Max_Project.tif']);
+    if ~exist([folder2Process 'Max_Project.tif'])
+        saveastiff(imageROI, [folder2Process 'Max_Project.tif']);
+    end 
     
     imageROI = imadjust(imageROI); % saturate image to make neural net prediction better
 end
@@ -111,11 +113,7 @@ end
 
 % get image to FIJI
 MIJImageROI = MIJ.createImage('ROI_image',imageROI,true); %#ok<NASGU> supressed warning as no need to worry about
-
-% set window size and make the image easier to view
-WaitSecs(0.2);
-ij.IJ.run('Set... ', ['zoom=' num2str(magSize) ' x=10 y=50']);
-ij.IJ.run('Enhance Contrast', 'saturated=0.35');
+ij.process.ImageConverter(MIJImageROI).convertToRGB;
 
 % load in pixel preference images if they exist
 pixelSelectivityImages = dir([folder2Process 'Pixel Orientation Pref_native*']);
@@ -137,8 +135,37 @@ end
 % display stack
 stackImagePlusObj = ij.ImagePlus('Pixel Orientation Stack.tif', pixelPrefStack);
 stackImagePlusObj.show;
+ij.process.ImageConverter(stackImagePlusObj).convertToRGB;
+
+% load in pixel selectivity images if they exist
+pixelSelectivityImages = dir([folder2Process 'Pixel Orientation Selectivity_native*LCS.tif']);
+
+% get all the FIJI stuff for each image
+for i =1:length(pixelSelectivityImages)
+    eval(['imp' num2str(i) '= ij.IJ.openImage([folder2Process pixelSelectivityImages(' num2str(i) ').name]);']);
+    eval(['processorSelect' num2str(i) '= imp' num2str(i) '.getProcessor();']);
+end
+
+% create empty stack
+pixelSelectivityStack = ij.ImageStack(imp1.getWidth, imp1.getHeight);
+
+% fill stack with images
+for i =1:length(pixelSelectivityImages)
+    eval(['pixelSelectivityStack.addSlice(imp' num2str(i) '.getTitle, processorSelect' num2str(i) ');']);
+end
+
+% display stack
+stackImagePlusObjSelect = ij.ImagePlus('Pixel Pref Stack.tif', pixelSelectivityStack);
+stackImagePlusObjSelect.show; 
+ij.process.ImageConverter(stackImagePlusObjSelect).convertToRGB;
+
+
+MIJ.run("Concatenate...", "  title=[Full Stack] open image1=ROI_image image2=[Pixel Orientation Stack.tif] image3=[Pixel Pref Stack.tif]");
+MIJImageROI.close;
+% set window size and make the image easier to view
 WaitSecs(0.2);
-ij.IJ.run('Set... ', ['zoom=' num2str(magSize) ' x=500 y=50']);
+ij.IJ.run('Set... ', ['zoom=' num2str(magSize) ' x=10 y=50']);
+ij.IJ.run('Enhance Contrast', 'saturated=0.35');
 
 % open ROI tool
 MIJ.run("Cell Magic Wand Tool");
