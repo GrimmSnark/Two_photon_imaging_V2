@@ -78,7 +78,7 @@ contrast = [0.2 0.4 0.6 0.8 1] ; % should already be set by the sine grating cre
 orientations =[0    45    90   135   180   225   270   315]; % angle in degrees
 
 
-Angle =repmat(orientations,[1 size(contrast, 1)]); % angle in degrees x number of constrasts
+Angle =repmat(orientations,[1 length(contrast)]); % angle in degrees x number of constrasts
 numCnd = length(Angle); % conditions = angle x constrasts
 
 
