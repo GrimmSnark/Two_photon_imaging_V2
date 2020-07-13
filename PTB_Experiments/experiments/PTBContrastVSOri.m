@@ -219,6 +219,8 @@ if doNotSendEvents ==0
     DaqDConfigPort(daq,1,1) % configure port B for input
 end
 
+experimentStartTime = tic;
+
 vbl = Screen('Flip', windowPtr);
 for currentBlkNum = 1:numReps
     
@@ -233,7 +235,8 @@ for currentBlkNum = 1:numReps
         indexForOrientation = find(Angle==trialParams, 1); % get index for that angle
         
         % get color condition
-        currentContrastLevel = ceil(cndOrder(trialCnd)/length(orientations));
+        currentContrastNo = ceil(cndOrder(trialCnd)/length(orientations));
+        currentContrastLevel = contrast(currentContrastNo);
         
         % set current contast ramp increments
         contrastLevels = linspace(0, currentContrastLevel, contrast_rampFrames);
@@ -298,6 +301,8 @@ for currentBlkNum = 1:numReps
         end
         
         %% Stim on
+        
+        stimOnFlag =1;
         % start constrast ramp on
         if rampTime > 0
             for frameNo =1:contrast_rampFrames
@@ -333,7 +338,7 @@ for currentBlkNum = 1:numReps
             % draw grating on screen
             %Screen('DrawTexture', windowPointer, texturePointer [,sourceRect] [,destinationRect] [,rotationAngle] [, filterMode] [, globalAlpha] [, modulateColor] [, textureShader] [, specialFlags] [, auxParameters]);
             
-            Screen('DrawTexture', windowPtr, gratingid(constrastNo), [], dstRect , Angle(angleNo), [], [], [], [], [], propertiesMat' );
+            Screen('DrawTexture', windowPtr, gratingid, [], dstRect , Angle(cndOrder(trialCnd)), 0, [], [modulateCol], [], [], propertiesMat' );
             Screen('DrawingFinished', windowPtr);
             
             if doNotSendEvents ==0
@@ -403,13 +408,21 @@ for currentBlkNum = 1:numReps
             end
         end
     end
-    
-    %% save things before close
-    if doNotSendEvents ==0
-        saveCmpEventFile(stimCmpEvents, dataDir, indentString, timeSave);
+     % Abort requested? Test for keypress:
+    if KbCheck
+        break;
     end
-    
-    % Clear screen
-    sca;
+end
+toc(experimentStartTime);
+
+%% save things before close
+if doNotSendEvents ==0
+    saveCmpEventFile(stimCmpEvents, dataDir, indentString, timeSave);
+end
+
+% ShowCursor([],[windowPtr],[]);
+Screen('LoadNormalizedGammaTable', windowPtr, oldTable);
+% Clear screen
+sca;
 end
 
