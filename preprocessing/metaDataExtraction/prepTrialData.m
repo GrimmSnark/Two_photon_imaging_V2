@@ -85,11 +85,19 @@ for i =1:length(validTrial)
     % if there are more than 2 events between param start and end then get
     % rid of the duplicate
     paramStartEndDiff = findEvents('PARAM_END',rawTrials{i},codes)-paramStartIndx;
+    
     if paramStartEndDiff > 3
         rawTrials{i}(findEvents('PARAM_END',rawTrials{i},codes)-1,:) = [];
     end
     
     nonEssentialIndStart = findEvents('PARAM_END',rawTrials{i},codes)+1; % gets the index for the event just after PARAM_END
+    
+    % if can not find param end postion in raw trials uses the PTB event
+    % array
+    if isempty(nonEssentialIndStart)
+        nonEssentialIndStart = paramStartPosition(i)+4 - (paramStartPosition(i)-2); % set relative event index number after param end for this trial...
+    end
+    
     nonEssentialIndEnd = findEvents('TRIAL_END',rawTrials{i},codes); % gets the index for TRIAL_END
     
     sizeInd = nonEssentialIndEnd-nonEssentialIndStart+1; % gets length of vector to come
@@ -146,7 +154,7 @@ for i =1:length(nonEssentialEventNumbers)
         end
         
         %         trialEventAverage = floor(mean(trialSumEvents)); % finds the correct number of a particular event in each trial
-        trialEventAverage = sum(PTBeventArray == nonEssentialEventNumbers(i))/sum(cndTotal(:)); % finds the correct number of a particular event in each trial
+        trialEventAverage = round(sum(PTBeventArray == nonEssentialEventNumbers(i))/sum(cndTotal(:))); % finds the correct number of a particular event in each trial
         
         if trialEventAverage==0 % if calculates zero, corrects to one
             trialEventAverage = ceil(mean(trialSumEvents));
