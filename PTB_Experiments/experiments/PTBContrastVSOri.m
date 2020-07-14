@@ -342,10 +342,12 @@ for currentBlkNum = 1:numReps
             Screen('DrawingFinished', windowPtr);
             
             if doNotSendEvents ==0
-                if stimOnFlag ==1 % only sends stim on at the first draw of moving grating
-                    AnalogueOutEvent(daq, 'STIM_ON');
-                    stimCmpEvents(end+1,:)= addCmpEvents('STIM_ON');
-                    stimOnFlag = 0;
+                if rampTime == 0
+                    if stimOnFlag ==1 % only sends stim on at the first draw of moving grating
+                        AnalogueOutEvent(daq, 'STIM_ON');
+                        stimCmpEvents(end+1,:)= addCmpEvents('STIM_ON');
+                        stimOnFlag = 0;
+                    end
                 end
             end
             
@@ -408,7 +410,7 @@ for currentBlkNum = 1:numReps
             end
         end
     end
-     % Abort requested? Test for keypress:
+    % Abort requested? Test for keypress:
     if KbCheck
         break;
     end
