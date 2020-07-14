@@ -37,7 +37,7 @@ for  cnd =1:length(experimentStructure.cndTrials) % for each condition
     for iter =1:length(experimentStructure.cndTrials{cnd}) % for each trial of that type
         
         currentTrial = experimentStructure.cndTrials{cnd}(iter); % gets current trial number for that cnd
-        currentStimChunk = experimentStructure.EventFrameIndx.STIM_ON(currentTrial):experimentStructure.EventFrameIndx.STIM_OFF(currentTrial);
+        currentStimChunk = experimentStructure.EventFrameIndx.STIM_ON(1,currentTrial):experimentStructure.EventFrameIndx.STIM_OFF(currentTrial);
         stimChunkLength = length(currentStimChunk);
         currentPreStimChunk = experimentStructure.EventFrameIndx.PRESTIM_ON(currentTrial):experimentStructure.EventFrameIndx.PRESTIM_OFF(currentTrial);
         preStimChuckLength = length(currentPreStimChunk);
