@@ -328,7 +328,6 @@ for currentBlkNum = 1:numReps
             end
         end
         
-        stimOnFlag =1;
         for frameNo =1:totalNumFrames
             % Increment phase by cycles/s:
             phase = phase + phaseincrement;
