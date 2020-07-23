@@ -64,6 +64,29 @@ validTrial = numOfEssentialEvents==length(essentialEventsNum); % indx of valid t
 
 disp([num2str(sum(validTrial)) ' / '  num2str(length(validTrial)) ' trials have valid condition codes!!!']);
 
+
+%% try to fix trials with invalid numbers of essential events
+invalidTrials = find(validTrial==0);
+
+if ~isempty(invalidTrials)
+    disp(['Fixing essential trial codes']);
+    
+    % get the trial start positions for PTB events
+    trialStartPositionPTB = find(PTBeventArray ==stringEvent2Num('TRIAL_START', codes));
+    
+    for xx = invalidTrials
+        % get the current trial events from decoded events and PTB
+        currentPTBTrial = PTBeventArray(trialStartPositionPTB(xx):trialStartPositionPTB(xx+1)-1);
+        
+        % each essential event check that the number of occurances match
+        % up
+        for aa = essentialEventsNum
+            if sum(currentPTBTrial==aa) ~= sum(rawTrials{xx}(:,2)==aa)
+                rawTrials{xx}(currentPTBTrial==aa,2) = aa;
+            end
+        end
+    end
+end
 %% extract stimulus conditions for each valid trial
 
 block = zeros(length(validTrial),2);
