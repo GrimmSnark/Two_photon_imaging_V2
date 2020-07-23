@@ -60,6 +60,7 @@ registeredVolMIJI = MIJ.createImage( 'Registered Volume', registeredVol,true);
 
 % allocate fields
 experimentStructure.rawF = [];
+experimentStructure.rawF_neuropil =[];
 experimentStructure.xPos = zeros(experimentStructure.cellCount,1);
 experimentStructure.yPos = zeros(experimentStructure.cellCount,1);
 

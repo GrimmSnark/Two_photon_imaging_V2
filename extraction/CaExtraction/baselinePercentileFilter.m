@@ -1,4 +1,4 @@
-function highpassFilteredTrace = baselinePercentileFilter(inputTrace,fps,filteredCutOff,desiredPercentileRank)
+ function highpassFilteredTrace = baselinePercentileFilter(inputTrace,fps,filteredCutOff,desiredPercentileRank)
 % highpassFilteredTrace = baselinePercentileFilter(inputTrace,fps,filteredCutOff,desiredPercentileRank)
 %
 % Uses a combination of 1-d median/butterworth high-pass filtered to compute a baseline 
