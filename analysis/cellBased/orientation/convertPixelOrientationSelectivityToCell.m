@@ -237,5 +237,5 @@ catch
     experimentStructure.pixelCellOrienationAverage = grandAverageOri;
     experimentStructure.pixelCellOrientationSelectivity = grandAverageSelectivity;
 end
-save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure');
+save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure', '-v7.3');
 end

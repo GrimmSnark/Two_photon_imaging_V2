@@ -109,6 +109,6 @@ catch
     experimentStructure.dFstimWindowAverageFBSSigmaR2 = grandR2;
 end
 
-save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure');
+save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure', '-v7.3');
 
 end

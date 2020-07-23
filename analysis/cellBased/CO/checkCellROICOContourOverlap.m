@@ -74,7 +74,7 @@ end
 
 experimentStructure.COIdent = sum(COFlag,1)'; % reduces array to vector
 
- save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure');
+ save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure', '-v7.3');
 
 end
 

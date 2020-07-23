@@ -107,6 +107,6 @@ experimentStructure.ChannelOverlap = cellIdent;
 MIJ.closeAllWindows;
 
 %% Save the updated experimentStructure
-save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure');
+save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure', '-v7.3');
 
 end

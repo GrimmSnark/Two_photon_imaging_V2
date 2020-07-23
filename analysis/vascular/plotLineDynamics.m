@@ -27,14 +27,14 @@ stimOnLine = zeros(length(zProfilesPerPixel), 1);
 % checks if meanFrameLength exists, if not calculates it
 if ~isfield(experimentStructure , 'meanFrameLength')
     experimentStructure.meanFrameLength = ceil(mean(experimentStructure.EventFrameIndx.TRIAL_END - experimentStructure.EventFrameIndx.PRESTIM_ON));
-    save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure');
+    save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure', '-v7.3');
 end
 
 % checks if stimOnFrames exists, if not calculates it
 if ~isfield(experimentStructure , 'stimOnFrames')
     experimentStructure.stimOnFrames = [ceil(mean(experimentStructure.EventFrameIndx.STIM_ON - experimentStructure.EventFrameIndx.PRESTIM_ON))+1 ...
             ceil(mean(experimentStructure.EventFrameIndx.STIM_OFF - experimentStructure.EventFrameIndx.PRESTIM_ON))-1];
-    save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure');
+    save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure', '-v7.3');
 end
 
 % get time point increment for 5 sec

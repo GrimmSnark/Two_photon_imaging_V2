@@ -106,5 +106,5 @@ for i = 1:experimentStructure.cellCount
 end
 
 % save structure
-save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure');
+save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure', '-v7.3');
 end

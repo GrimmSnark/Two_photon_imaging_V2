@@ -48,7 +48,7 @@ for i = 1:length(folders2Process)
         
         % save object as experimentStructure
         experimentStructure = tempObject;
-        save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure');
+        save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure', '-v7.3');
     end
     
     catch

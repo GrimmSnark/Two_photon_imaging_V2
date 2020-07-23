@@ -73,7 +73,7 @@ for q = 1:length(filepaths)
             MIJ.closeAllWindows
             
             %% Save the updated experimentStructure
-            save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure');
+            save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure', '-v7.3');
         end
     end
 end
