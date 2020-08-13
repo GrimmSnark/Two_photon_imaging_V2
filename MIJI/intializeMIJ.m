@@ -16,21 +16,23 @@ catch ME
     
     % Add ImageJ to working directory
     javaaddpath([matlabroot '\java\jar\mij.jar']);
-        javaaddpath([matlabroot '\java\jar\ij-1.52g.jar']);
+        javaaddpath([matlabroot '\java\jar\ij-1.53c.jar']);
 %      javaaddpath([matlabroot '\java\jar\ij.jar']);
     
     % Add ImageJ plugins to the current path
     fijiPath = 'C:\PostDoc Docs\Fiji.app\';
     javaaddpath([fijiPath '\plugins'])
     javaaddpath([fijiPath '\macros'])
-    javaaddpath([fijiPath 'plugins\BIJ_\bij.jar'])
+%     javaaddpath([fijiPath 'plugins\BIJ_\bij.jar'])
     javaaddpath([fijiPath 'plugins\Cell_Magic_Wand_Tool.jar'])
-    javaaddpath([fijiPath 'plugins\Image_Stabilizer\'])
+%     javaaddpath([fijiPath 'plugins\Image_Stabilizer\'])
     % javaaddpath([fijiPath 'plugins\bUnwarpJ_.jar']);
     addpath([fijiPath 'scripts\']);
     
     % Startup ImageJ
     mij = Miji;
+    
+    MIJ.run('Install...', ['install=[' fijiPath '/macros/StartupMacros.fiji.ijm]']);
     
 end
 
