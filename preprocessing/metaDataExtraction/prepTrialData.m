@@ -207,7 +207,10 @@ for i =1:length(nonEssentialEventNumbers)
             
             % deletes these irrational events from the array
             for b =1:length(indexOfOddTimesOut)
-                indexOfBoth(indexOfOddTimesOut(b),:,indexOfMismatchedTrials(z)) = [0 0];
+                
+                % get matching time of event to delete
+                eventIndex2Delete = find(currentTrial(:,1) == currentTrialEventTimes(indexOfOddTimesOut(b)));
+                indexOfBoth(eventIndex2Delete,:,indexOfMismatchedTrials(z)) = [0 0];
             end
             
             % check number of events has been fixed AND if the event is
