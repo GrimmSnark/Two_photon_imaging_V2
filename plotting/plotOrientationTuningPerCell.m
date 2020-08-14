@@ -53,8 +53,13 @@ if ~isobject(filepath)
         filePath2Use = dir(filepath);
         experimentStructure.savePath = [filePath2Use.folder '\'] ;
     catch
-        load([filepath '\experimentStructure.mat']);
-        experimentStructure.savePath = [filepath '\'];
+        if exist([filepath '\experimentStructure.mat'], 'file' )
+            load([filepath '\experimentStructure.mat']);
+            experimentStructure.savePath = [filepath '\'];
+        else
+            folder2Try = dir([filepath '\**\experimentStructure.mat']);
+            load([folder2Try.folder '\experimentStructure.mat']);
+        end        
     end
 else % if variable is the experimentStructure
     experimentStructure = filepath;

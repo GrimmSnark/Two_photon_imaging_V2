@@ -80,5 +80,5 @@ for i = 1:length(experimentStructure.dFperCnd) % for each cell
 end
 
 %% Save the updated experimentStructure
-save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure', '-v7.3');
+save([experimentStructure.savePath '\experimentStructure.mat'], 'experimentStructure', '-v7.3');
 end
