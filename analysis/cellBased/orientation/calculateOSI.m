@@ -47,21 +47,37 @@ oriStruct.curve(4,:) = dataSEM;
 OSI_FitStruct_VH = oridir_fitindexes(oriStruct);
 OSI_FitStruct_VH.OSI_PR = computeOSI_Priebe(OSI_FitStruct_VH.fit(1,:), OSI_FitStruct_VH.fit(2,:));
 %% LS model fit OSI with Priebe Calculation
-x=interp1(dataMeans,linspace(1,length(angles),36));
 
 OSI_FitStruct_LS = [];
 OSI_FitStruct_LS.OSI = 0;
 
 % try to run this fit, sometimes may not work as response is too flat
-try
-OSI_FitStruct_LS = dualGaussianFitMS(x);
 
-response = OSI_FitStruct_LS.modelTrace;
-responseAngles = 1:length(response);
+if  max(angles) > 180
+    x=interp1(dataMeans,linspace(1,length(angles),36));
 
-OSI_FitStruct_LS.OSI = computeOSI_Priebe(responseAngles, response);
-catch
-    
+    try
+        OSI_FitStruct_LS = dualGaussianFitMS(x);
+        
+        response = OSI_FitStruct_LS.modelTrace;
+        responseAngles = 1:length(response);
+        
+        OSI_FitStruct_LS.OSI = computeOSI_Priebe(responseAngles, response);
+    catch
+        
+    end
+else
+    x=interp1(dataMeans,linspace(1,length(angles),18));
+    try
+        OSI_FitStruct_LS = singleGaussianFit(x);
+        
+        response = OSI_FitStruct_LS.modelTrace;
+        responseAngles = 1:length(response);
+        
+        OSI_FitStruct_LS.OSI = computeOSI_Priebe(responseAngles, response);
+    catch
+        
+    end
 end
 
 %% build OSIStruct

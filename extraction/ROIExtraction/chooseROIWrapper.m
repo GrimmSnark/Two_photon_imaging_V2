@@ -1,4 +1,4 @@
-function runCaAnalysisWrapper(experimentDayFilepath, chooseROIsFlag, startDirNo, channel2Use, checkChannelOverlap)
+function chooseROIWrapper(experimentDayFilepath,startDirNo, checkChannelOverlap, saveFlag)
 % wrapper to batch choose ROIs and run calcium trace extraction from chosen
 % cells for an experiment day folder
 %
@@ -10,9 +10,6 @@ function runCaAnalysisWrapper(experimentDayFilepath, chooseROIsFlag, startDirNo,
 %
 %         startDirNo: specify the number folder to start on (OPTIONAL)
 %
-%         channel2Use: can specify channel to analyse if there are more 
-%                      than one recorded channel
-%                      (OPTIONAL) default = 2 (green channel)
 %         checkChannelOverlap: Indicates whether you want to
 %                              categorize cell ROIs into color channel
 %                              overlapping or not, ie whether it show
@@ -20,27 +17,27 @@ function runCaAnalysisWrapper(experimentDayFilepath, chooseROIsFlag, startDirNo,
 %                              two color channels
 %                               0 == do not categorize
 %                               1 == categorize (DEFAULT)
-
-
+%
+%         saveFlag: Indicated whether you want to save the
+%                   checkChannelOverlap output within this function. If you
+%                   are running this function as part of the
+%                   runCaAnalysisWrapper it will save the results in
+%                   CaAnalysis
+%                   0 == do not save 
+%                   1 == save here (DEFAULT)
 %% set defaults
 
-if nargin <2 || isempty(chooseROIsFlag)
-    chooseROIsFlag = 1;
-end
-
-if nargin <3 || isempty(startDirNo)
+if nargin <2 || isempty(startDirNo)
     startDirNo = 1;
 end
 
-if nargin <4 || isempty(channel2Use)
-    channel2Use = 2; % sets default channel to use if in multi channel recording
-end
-
-if nargin <5 || isempty(checkChannelOverlap)
+if nargin <3 || isempty(checkChannelOverlap)
     checkChannelOverlap = 1;
 end
 
-
+if nargin <4 || isempty(saveFlag)
+    saveFlag = 1;
+end
 %% start analysis
 
 % close all FIJI windows
@@ -59,27 +56,14 @@ if isempty(folders2Process)
     folders2Process = dir([filePath '\**\experimentStructure.mat']);
 end
 
-% remove zstack folders
-index2Remove = find(contains({folders2Process(:).folder}, 'ZSeries'));
-folders2Process(index2Remove) = [];
 
-%choose all ROIs if flag set
-if chooseROIsFlag == 1
-    for i = startDirNo:length(folders2Process)
-       killFlag = chooseROIs([folders2Process(i).folder '\'], 1, [], checkChannelOverlap);
+for i = startDirNo:length(folders2Process)
+    killFlag = chooseROIs([folders2Process(i).folder '\'], 0, [], checkChannelOverlap, saveFlag);
     
     if killFlag ==1 % if you choose to end script
-       return 
+        return
     end
     
-    end
-else % start FIJI if not already started
-    intializeMIJ;
-end
-
-% Do actual analysis
-for x =  startDirNo:length(folders2Process)
-     CaAnalysis([folders2Process(x).folder '\'], channel2Use);
 end
 
 end

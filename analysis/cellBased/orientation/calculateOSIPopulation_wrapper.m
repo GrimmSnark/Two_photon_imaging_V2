@@ -49,6 +49,10 @@ end
 % get the folders to process
 folders2Process = dir([directory '\**\experimentStructure.mat']);
 
+% remove zstack folders
+index2Remove = find(contains({folders2Process(:).folder}, 'ZSeries'));
+folders2Process(index2Remove) = [];
+
 % tries to fix if we happened to use the raw data path
 if isempty(folders2Process)
     filePath = createSavePath(directory,1,1);
@@ -57,9 +61,9 @@ end
 
 for i = startDirNo:length(folders2Process)
     load([folders2Process(i).folder '\experimentStructure.mat']);
-    experimentStructure =calculateOSIPopulation(experimentStructure, noOrientations, angleMax, secondCndDimension, dataType);
     
-%     compareOrientationTuningFits(experimentStructure, [], noOrientations, angleMax);
+    experimentStructure =calculateOSIPopulation(experimentStructure, noOrientations, angleMax, secondCndDimension, dataType);
+    %     compareOrientationTuningFits(experimentStructure, [], noOrientations, angleMax);
 end
 
 end

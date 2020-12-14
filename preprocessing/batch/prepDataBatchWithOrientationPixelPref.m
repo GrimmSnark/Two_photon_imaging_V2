@@ -134,7 +134,7 @@ if isempty(folders2Process)
 end
 
 for i = startDirNo:length(folders2Process)
-    pixelwiseOrientationSelectivity([folders2Process(i).folder '\'], noOrientations,angleMax, secondCndDimension,useSTDorMean, channel2register)
+    pixelwiseOrientationSelectivity([folders2Process(i).folder '\'], noOrientations,angleMax, secondCndDimension,useSTDorMean, channel2register);
 end
 
 

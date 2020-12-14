@@ -1,4 +1,4 @@
-function [eventArray, PTBeventArray ]= checkConsistencyPrairie2PTB(dataPrairie, dataPTB)
+function [eventArray, PTBevents ]= checkConsistencyPrairie2PTB(dataPrairie, dataPTB)
 % checks the consistency between recorded prairie events and the events
 % set in the PTB experimental file
 %  

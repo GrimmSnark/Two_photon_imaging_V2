@@ -1,4 +1,4 @@
-function displayStackOverlaysFIJI(folders,image2Use, ROI2Use)
+function displayStackOverlaysFIJI(folders,image2Use, ROI2Use, labelCol)
 % Display summary images from different 2P recording runs and overlays
 % their line ROIs. Allows user to check for overlap of dendrites etc.
 % Requiires that you have run plotLineProfilesPerCnd.m
@@ -13,6 +13,11 @@ function displayStackOverlaysFIJI(folders,image2Use, ROI2Use)
 %         ROIText - number to inidicate which ROIs to overlay
 %                   1 = Line ROIs (DEFAULT)
 %                   2 = dendrite oval ROIs
+%
+%         labelCol - color of ROI number labels
+%                   1 = Black (DEFAULT)
+%                   2 = White
+
 
 
 %% Defaults
@@ -22,6 +27,10 @@ end
 
 if nargin < 3 || isempty(ROI2Use)
    ROI2Use = 1; 
+end
+
+if nargin < 4 || isempty(labelCol)
+    labelCol = 1;
 end
 
 % get the appropriate magnification for ROI image
@@ -91,8 +100,15 @@ end
 stackImagePlusObj.setOverlay(overlayPointer)
 
 % sets labels to correct numbers
-MIJ.run("Labels...", "color=black font=15 show use bold");
+if labelCol == 1
+    MIJ.run("Labels...", "color=black font=15 show use bold");
+else
+    MIJ.run("Labels...", "color=white font=15 show use bold");
+end
 
+% set window size and make the image easier to view
+WaitSecs(0.2);
+ij.IJ.run('Set... ', ['zoom=' num2str(magSize) ' x=10 y=50']);
 
 %% Handle script exit
 

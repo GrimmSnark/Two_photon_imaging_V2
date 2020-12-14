@@ -1,4 +1,4 @@
-function experimentStructure = createSummaryImages(experimentStructure, imagingVol, saveRegMovie, experimentFlag, channelIdentifier, GPUOverride)
+function experimentStructure = createSummaryImages(experimentStructure, imagingVol, saveRegMovie, experimentFlag, channelIdentifier, createChannelOverlapIm, GPUOverride)
 % Creates and saves a variety of summary images from the experimental data,
 % ie registered image stack, SD maps for prestim and stim period. This
 % function allows you to use GPU to calculate these images if you GPU
@@ -17,20 +17,34 @@ function experimentStructure = createSummaryImages(experimentStructure, imagingV
 %        channelIdentifier: OPTIONAL, string identifier for channel, ie
 %                           '_Ch1'
 %
+%        createChannelOverlapIm: Flag to create channel overlap image for
+%                                structural marker, currently makes an
+%                                aveage of the 100 lowest value pixels in
+%                                the time domain to create an overlap
+%                                image (to remove functional-structural
+%                                image overlap)
+%                                Default == 0, ie do NOT create
+%
 %        GPUOverride: set flag to 1 if you want to override the GPU size
 %                     minimum and use it anyway to create images, in 
-%                     general GPU is MUCH faster than CPU!!!
+%                     general GPU is MUCH faster than CPU!!! (Default == 0)
 %
 % Output- experimentStructure: experimentStructure updated
 
+%% defaults
 if nargin<5 
     channelIdentifier = [];
 end
 
-if nargin <6 || isempty(GPUOverride)
+if nargin <6 || isempty(createChannelOverlapIm)
+    createChannelOverlapIm = 0;
+end
+
+if nargin <7 || isempty(GPUOverride)
     GPUOverride = 0;
 end
 
+%%
 if saveRegMovie ==1
     %         savePath = createSavePath(dataDir, 1);
     disp('Saving registered image stack')
@@ -46,7 +60,7 @@ if experimentFlag == 1
         [stimSTDSum, preStimSTDSum, stimMeanSum , preStimMeanSum ,experimentStructure] = createStimSTDAverageGPU(experimentStructure, imagingVol,channelIdentifier);        
     else  % otherwise uses CPU..
         % Create and save STD sums
-        [stimSTDSum, preStimSTDSum, stimMeanSum , preStimMeanSum ,experimentStructure] = createStimSTDAverage(imagingVol, experimentStructure, channelIdentifier);
+        [stimSTDSum, preStimSTDSum, stimMeanSum , preStimMeanSum ,experimentStructure] = createStimSTDAverage(experimentStructure, imagingVol, channelIdentifier);
     end
 end
 
@@ -58,7 +72,7 @@ saveastiff(preStimMeanSum, [experimentStructure.savePath 'Mean_Prestim_Sum' chan
 
 
 
-% Create STD average image and save
+%% Create STD average image and save
 
 % deals with issues of stack size
 stdVol = zeros(size(imagingVol,1), size(imagingVol,2));
@@ -80,10 +94,17 @@ end
 
 saveastiff(stdVol, [experimentStructure.savePath 'STD_Average' channelIdentifier '.tif']);
 
-%Create normal average image and save
+% Create normal average image and save
 meanVol = mean(imagingVol,3);
 meanVol = uint16(mat2gray(meanVol) * 65535);
 
 saveastiff(meanVol, [experimentStructure.savePath 'Average' channelIdentifier '.tif']);
+
+%% Create filtered overlap image if specified
+
+if createChannelOverlapIm == 1
+    createChannelOverlapImage(experimentStructure, imagingVol, channelIdentifier);
+end
+
 
 end

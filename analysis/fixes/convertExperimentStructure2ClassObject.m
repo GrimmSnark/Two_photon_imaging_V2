@@ -1,6 +1,6 @@
 function failedFiles = convertExperimentStructure2ClassObject(directory)
 
-
+failedFiles = [];
 %% Start processing
 
 % get the folders to process
@@ -21,6 +21,7 @@ for i = 1:length(folders2Process)
     try
     load([folders2Process(i).folder '\experimentStructure.mat']);
     
+    disp(['Loaded ' folders2Process(i).folder '\experimentStructure.mat (' num2str(i) '/' num2str(length(folders2Process)) ')']);
     % if is not object then convert
     if ~isobject(experimentStructure)
         

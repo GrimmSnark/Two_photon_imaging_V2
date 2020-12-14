@@ -77,6 +77,19 @@ for x = 1:experimentStructure.cellCount
 
     experimentStructure.yPos(x) =  currentROI.getYBase;
     experimentStructure.xPos(x) = currentROI.getXBase;
+    
+    % get the channel overlap identity
+    try
+        ROIColor = [currentROI.getStrokeColor.getRed, currentROI.getStrokeColor.getGreen, currentROI.getStrokeColor.getBlue];
+    catch
+        ROIColor = [0 255 255];
+    end
+    
+    if ROIColor == [255 0 0]
+        experimentStructure.ChannelOverlap(x,1) = 1;
+    else
+        experimentStructure.ChannelOverlap(x,1) = 0;
+    end
 
     
     % Get the fluorescence timecourse for the cell and neuropil ROI by
@@ -99,12 +112,16 @@ for x = 1:experimentStructure.cellCount
     end
 end
 
+numOfDualChanCells = sum(experimentStructure.ChannelOverlap);
+disp(['You have selected ' num2str(numOfDualChanCells) '/' num2str(experimentStructure.cellCount) ' (' sprintf('%.2f',(numOfDualChanCells/experimentStructure.cellCount)*100) '%) ROIs, as dual channel moving on...']);
+
+
 %% subtract neuropil signal
 
 % Compute the neuropil-contributed signal from our cells, and eliminate
 % them from our raw cellular trace
-[experimentStructure.correctedF, experimentStructure.neuropCorrPars]=estimateNeuropil(experimentStructure.rawF,experimentStructure.rawF_neuropil); % neuropil subtraction calculated from Dipoppa et al 2018
 
+[experimentStructure.correctedF, experimentStructure.neuropCorrPars]=estimateNeuropil(experimentStructure.rawF,experimentStructure.rawF_neuropil); % neuropil subtraction calculated from Dipoppa et al 2018
 
 %% Define a moving and fluorescence baseline using a percentile filter
 experimentStructure.rate      = 1/experimentStructure.framePeriod; % frames per second

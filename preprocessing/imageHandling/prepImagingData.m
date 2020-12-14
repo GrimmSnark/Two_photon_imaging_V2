@@ -22,7 +22,7 @@ end
 % sets fullfile for first image
 experimentStructure.fullfile = frameFilepath;
 
-% reads in imaging data
+% reads in2 imaging data
 imagingVol = read_Tiffs(frameFilepath,1); % if one large 3d file
 
 % if it is a t series

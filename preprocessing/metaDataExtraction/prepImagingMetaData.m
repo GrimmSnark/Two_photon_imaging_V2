@@ -48,6 +48,23 @@ experimentStructure.absoluteFrameTimes = experimentStructure.absoluteFrameTimes 
 experimentStructure.relativeFrameTimes = extractFromStruct(imagingStructRAW, 1, 3, 'PVScan', 'Sequence', 'Frame', 'Attributes', 'relativeTime');
 experimentStructure.relativeFrameTimes = experimentStructure.relativeFrameTimes * 1000; % converts the relative times to ms
 
+% get X Y Z postions per frame
+
+try
+% X
+experimentStructure.positionsPerFrame(:,1) = extractFieldFromStruct(imagingStructRAW, 1, 3, 5 ,'positionCurrent', ...
+    'PVScan', 'Sequence', 'Frame', 'PVStateShard', 'PVStateValue', 'SubindexedValues{1}','SubindexedValue', 'Attributes','value');
+
+% Y
+experimentStructure.positionsPerFrame(:,2) = extractFieldFromStruct(imagingStructRAW, 1, 3, 5 ,'positionCurrent', ...
+    'PVScan', 'Sequence', 'Frame', 'PVStateShard', 'PVStateValue', 'SubindexedValues{2}','SubindexedValue', 'Attributes','value');
+
+% Z
+experimentStructure.positionsPerFrame(:,3) = extractFieldFromStruct(imagingStructRAW, 1, 3, 5 ,'positionCurrent', ...
+    'PVScan', 'Sequence', 'Frame', 'PVStateShard', 'PVStateValue', 'SubindexedValues{3}','SubindexedValue', 'Attributes','value');
+catch
+end
+
 % get filenames
 try
     experimentStructure.filenamesFrame = extractFromStruct(imagingStructRAW, 0, 3, 'PVScan', 'Sequence', 'Frame', 'File', 'Attributes', 'filename');

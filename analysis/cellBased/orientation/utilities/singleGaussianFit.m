@@ -73,6 +73,14 @@ disp('R square '); disp([f2.rsquare]);
 
 % Choose the output format you want:
 %y=feval(f1,10*([0:.1:35.9]'))';                            % the curve fit
-y=[f1.a1 f1.b1 f1.c1 f1.d f2.rsquare];    % the fit coefficients
+% y=[f1.a1 f1.b1 f1.c1 f1.d f2.rsquare];    % the fit coefficients
+
+y.Peak1Amp = f1.a1; 
+y.Peak1Loc = f1.b1;
+y.Peak1Width = f1.c1;
+y.Offset = f1.d;
+y.model = f1;
+y.modelTrace = feval(f1,10*([0:.1:17.9]'))';
+
 
 clear xvalue data pks locs;

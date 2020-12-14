@@ -81,18 +81,18 @@ MIJ.closeAllWindows;
 
 %% if dual channel recording, checks for cell expression in both channels
 
-% check number of channels in imaging stack
-channelIndxStart = strfind(experimentStructure.filenamesFrame{1}, '_Ch');
-for i =1:length(experimentStructure.filenamesFrame)
-    channelIdentity{i} = experimentStructure.filenamesFrame{i}(channelIndxStart+3);
-end
-
-channelNo = unique(channelIdentity);
-channelNo = cellfun(@str2double,channelNo);
-
-if length(channelNo) > 1
-    channel2Check= channelNo(channelNo ~= channel2Use);
-    checkDualChannelExpression(experimentStructure, channel2Check);
-end
+% % check number of channels in imaging stack
+% channelIndxStart = strfind(experimentStructure.filenamesFrame{1}, '_Ch');
+% for i =1:length(experimentStructure.filenamesFrame)
+%     channelIdentity{i} = experimentStructure.filenamesFrame{i}(channelIndxStart+3);
+% end
+% 
+% channelNo = unique(channelIdentity);
+% channelNo = cellfun(@str2double,channelNo);
+% 
+% if length(channelNo) > 1
+%     channel2Check= channelNo(channelNo ~= channel2Use);
+%     checkDualChannelExpression(experimentStructure, channel2Check);
+% end
 
 end

@@ -273,7 +273,7 @@ for i =cellNo
             ylabel('\DeltaF/F')
             xlabel(sprintf('Stimulus direction (%s)', char(176)));
             ylim([minData maxData]);
-            title(['Condition: ' scndDimLabels{current2ndDim}]);
+            title(['Condition: ' scndDimLabels{current2ndDim} '      OSI (1-CV): ' num2str(experimentStructure.OSIStruct{i,current2ndDim}.OSI_CV )]);
         end
         
         % set labels
@@ -295,7 +295,15 @@ for i =cellNo
         % add zero line
          if rem(x,noOrientations) == 0
             hline(0,'k--','');
-        end
+           
+            % add tuning curve
+            try
+                respacedCurve = interp1(1: length(experimentStructure.OSIStruct{i, current2ndDim}.LSStruct.modelTrace), experimentStructure.OSIStruct{i, current2ndDim}.LSStruct.modelTrace, linspace(1,length(experimentStructure.OSIStruct{i, current2ndDim}.LSStruct.modelTrace),subFighandle.XLim(2)), 'spline');
+                plot(0:subFighandle.XLim(2)-1,respacedCurve, 'Color',curentLineCol,'LineStyle', '--');
+            catch
+                
+            end
+         end
     end
     tightfig;
     

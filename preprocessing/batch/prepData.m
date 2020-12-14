@@ -155,6 +155,7 @@ if length(channelNo)> 1 % choose one channel to register if multiple exist
     indForOtherChannel = find(~strcmp(channelNo, channelNo{channel2register}));
     vol = shiftImageStack(volSplit(:,:,:,indForOtherChannel),xyShifts([2 1],:)'); % Apply actual shifts to tif stack
     experimentStructure =  createSummaryImages(experimentStructure,vol, saveRegMovie, experimentFlag,channelNo{indForOtherChannel});
+    createChannelOverlapImage(experimentStructure, vol,channelNo{indForOtherChannel}, 100);
 else
     %% If single channel stack
     

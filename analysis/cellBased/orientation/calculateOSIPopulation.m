@@ -63,7 +63,7 @@ if cndNo~= length(experimentStructure.cndTotal)
 end
 
 % split coditions into matrix by second dimension
-condtionsBy2ndDim = reshape(1:cndNo,[], noOrientations);
+condtionsBy2ndDim = reshape(1:cndNo,noOrientations, [])';
 
 % get angle identities
 angles = linspace(0, angleMax, noOrientations+1);

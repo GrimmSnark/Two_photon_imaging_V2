@@ -20,6 +20,11 @@ experimentStructure.stimOnFrames = stimOnFrames; % saves the frame index for the
 experimentStructure.dFperCnd = [];
 experimentStructure.dFperCndFBS = [];
 experimentStructure.rawFperCnd = [];
+experimentStructure.dFperCndMean  = [];
+experimentStructure.dFperCndSTD  = [];
+
+experimentStructure.dFperCndMeanFBS  = [];
+experimentStructure.dFperCndSTDFBS  = [];
 
 %% chunks up dF into cell x cnd x trial
 for p = 1:experimentStructure.cellCount % for each cell
@@ -50,7 +55,7 @@ for p = 1:experimentStructure.cellCount % for each cell
                 
                 % calulates per trial DF/F FBS
                 rawFCurrentTrial = experimentStructure.rawF(p,currentTrialFrameStart:currentTrialFrameStart+ (analysisFrameLength-1)); % gets the raw trial
-                rawFCurrentFrameBeforeStim = experimentStructure.rawF(p,currentTrialFrameStart+experimentStructure.stimOnFrames(1)-2); % get the FBS values
+                rawFCurrentFrameBeforeStim = rawFCurrentTrial(stimOnFrames(1)-2); % get the FBS values
                 experimentStructure.dFperCndFBS{p}{x}(:,y) = (rawFCurrentTrial - rawFCurrentFrameBeforeStim)/rawFCurrentFrameBeforeStim; %creates the trial dF/F for FBS
                 
                 % makes average of prestim window

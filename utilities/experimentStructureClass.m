@@ -99,6 +99,13 @@ classdef experimentStructureClass < dynamicprops
         % see also prepData prepImagingMetaData
         currentPostion
         
+        % 4D vector of imaging location in microns (X Y Z frameNo)
+        % related to microdrive position for ewvery indivdual frame, Z
+        % position is the only one used in analysis
+        % see also prepData prepImagingMetaData
+        positionsPerFrame
+        
+        
         % number of images scanned to create single recorded image.
         % see also prepData prepImagingMetaData
         rastersPerFrame
@@ -454,7 +461,7 @@ classdef experimentStructureClass < dynamicprops
         % flag to show whether cell is found in both recording channels 
         % of 2 channel imaging 0 - only functional channel, 1- functional &
         % structural channel
-        % see also checkDualChannelExpression
+        % see also chooseROIs
         ChannelOverlap
         
         % flag to show if cell is cytochrome oxidase patch or interpatch

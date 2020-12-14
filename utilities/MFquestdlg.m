@@ -381,7 +381,9 @@ set(IconAxes, ...
 movegui(QuestFig)
 
 
-set(QuestFig ,'WindowStyle','modal','Visible','on');
+% set(QuestFig ,'WindowStyle','modal','Visible','on');
+set(QuestFig ,'WindowStyle','normal','Visible','on');
+
 drawnow;
 
 if DefaultButton ~= 0

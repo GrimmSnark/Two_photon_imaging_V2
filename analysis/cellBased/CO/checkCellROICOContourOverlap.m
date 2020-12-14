@@ -10,8 +10,11 @@ function checkCellROICOContourOverlap(recordingDir, COImageFilepath)
 
 intializeMIJ;
 
-MIJ.run('Close');
-MIJ.closeAllWindows;
+try
+    MIJ.run('Close');
+    MIJ.closeAllWindows;
+catch
+end
 
 % sets up ROI manager for this function
 RM = ij.plugin.frame.RoiManager();

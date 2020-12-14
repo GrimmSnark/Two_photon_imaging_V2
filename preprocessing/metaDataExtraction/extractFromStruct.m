@@ -39,9 +39,9 @@ if ~isempty(listEntry) % if you want to get data from a list
         for i=1:length(eval(structStringList)) % runs through the list
             
             try
-                outputValue{i} = eval([structStringList '{1,i}.' suffixString]);
+                outputValue{i} = eval([structStringList '{i}.' suffixString]);
             catch
-                outputValue{i} = eval([structStringList '(1,i).' suffixString]);
+                outputValue{i} = eval([structStringList '(i).' suffixString]);
             end
             
             if isNumeric % converts data to numbers
@@ -71,7 +71,7 @@ if ~isempty(listEntry) % if you want to get data from a list
                 
                 for x =1:length(listEntry)
                     counter = counter +1;
-                    outputValue{counter} = eval([structStringList '{1,i}.' chunkSuffix{1} '{1,x}.' chunkSuffix{2}]);
+                    outputValue{counter} = eval([structStringList '{i}.' chunkSuffix{1} '{x}.' chunkSuffix{2}]);
                     
                     if isNumeric % converts data to numbers
                         outputValue{counter} =  str2num(outputValue{counter});

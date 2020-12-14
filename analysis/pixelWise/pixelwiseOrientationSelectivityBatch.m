@@ -1,9 +1,12 @@
-function pixelwiseOrientationSelectivityBatch(directory, noOrientations, angleMax, secondCndDimension, useSTDorMean, channel2Use)
+function pixelwiseOrientationSelectivityBatch(directory, startDirNo, noOrientations, angleMax, secondCndDimension, useSTDorMean, channel2Use)
 % Function which plots orientation selectivty maps from STD or mean stim
 % images
 %
 % Inputs: directory - processed experiment day folder containing the
 %                     experimentStructure.mats
+%
+%          startDirNo: specify the number folder to start on (OPTIONAL)
+%
 %
 %         noOrientations - number of orientations tested in the experiment
 %                          ie 4/8 etc, default = 8
@@ -32,19 +35,23 @@ if nargin <2 || isempty(noOrientations)
     noOrientations = 8;
 end
 
-if nargin <3 || isempty(angleMax)
+if nargin < 3 || isempty(startDirNo)
+   startDirNo = 1; 
+end
+
+if nargin <4 || isempty(angleMax)
     angleMax = 360;
 end
 
-if nargin <4 || isempty(secondCndDimension)
+if nargin <5 || isempty(secondCndDimension)
     secondCndDimension = 1;
 end
 
-if nargin <5 || isempty(useSTDorMean)
+if nargin <6 || isempty(useSTDorMean)
     useSTDorMean = 1;
 end
 
-if nargin < 6 || isempty(channel2Use)
+if nargin < 7 || isempty(channel2Use)
     channel2Use = 2;
 end
 
@@ -59,6 +66,6 @@ if isempty(folders2Process)
     folders2Process = dir([filePath '\**\experimentStructure.mat']);
 end
 
-for i = 1:length(folders2Process)
+for i = startDirNo:length(folders2Process)
     pixelwiseOrientationSelectivity([folders2Process(i).folder '\'], noOrientations,angleMax, secondCndDimension,useSTDorMean, channel2Use)
 end

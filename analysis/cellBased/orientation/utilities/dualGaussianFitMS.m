@@ -9,6 +9,9 @@ function y=dualGaussianFitMS(x)
 % 2011
 % ==============================
 
+
+warning('off','all'); 
+
 xvalue=10*([1:length(x)]'-1);     
 %data=smooth(x,3);  
 data=filtfilt(hann(5),sum(hann(5)),x)';
@@ -55,9 +58,9 @@ if f2.rsquare < 0.9      % if first fit is not good, add bounds
     [f1,f2]=fit(xvalue,data,testfit,s);
 end;
 
-plot(xvalue,x,'b.');hold on;
-plot(xvalue,data,'ko');
-plot(f1,'k');hold off;
+% plot(xvalue,x,'b.');hold on;
+% plot(xvalue,data,'ko');
+% plot(f1,'k');hold off;
 
 % shift the fits back to original position
 f1.b1=f1.b1-peakshift;
@@ -75,10 +78,10 @@ disp('   a1        b1        c1        a2        b2         c2         d');
 disp([f1.a1 f1.b1 f1.c1 f1.a2 f1.b2 f1.c2 f1.d ]);
 disp('R square '); disp([f2.rsquare]);
 
-hold on; plot(f1,'b');
-hold off;
-
-legend('data','shift data','fit shift','fit data');
+% hold on; plot(f1,'b');
+% hold off;
+% 
+% legend('data','shift data','fit shift','fit data');
 
 % Choose the output format you want:
 %y=feval(f1,10*([0:.1:35.9]'))';                            % the curve fit
@@ -93,5 +96,7 @@ y.Peak2Width = f1.c2;
 y.Offset = f1.d;
 y.model = f1;
 y.modelTrace = feval(f1,10*([0:.1:35.9]'))';
+
+warning('on','all'); 
 
 clear xvalue data pks locs;
