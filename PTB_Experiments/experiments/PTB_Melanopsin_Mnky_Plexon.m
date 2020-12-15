@@ -46,6 +46,14 @@ stimCmpEvents = [1 1] ;
 levels = linspace(65535,0,numCnd+1);
 levelStim = levels(2:end);
 
+% log stim level    blue   red 
+levelStim = ...
+[-0.5               65460  65466; 
+0.5                 65272  65331;
+1.5                 64235  64150;
+2.5                 52895  51800];
+
+
 
 % Add stim parameters to structure for saving
 stimParams.preStimTime = preStimTime;
@@ -96,7 +104,7 @@ end
 experimentStartTime = tic;
 for currentBlkNum = 1:numReps
     counter = 0;
-    for trialCnd = 1:length(levelStim)
+    for trialCnd = 1:size(levelStim,1)
         for channel = 9:10
             counter = counter +1;
             % get current time till estimated finish
@@ -120,10 +128,10 @@ for currentBlkNum = 1:numReps
             fprintf(['Block No: %i of %i \n'...
                 'Condition No: %i of %i \n' ...
                 'LED Color: %s \n' ...
-                'Intensity: %d \n'...
+                'Intensity: %d log \n'...
                 'Estimated Time to Finish = %.1f minutes \n' ...
                 '############################################## \n'] ...
-                ,currentBlkNum, numReps, counter, length(levelStim)*2, channelText, levelStim(trialCnd),  timeLeft);
+                ,currentBlkNum, numReps, counter, size(levelStim,1)*2, channelText, levelStim(trialCnd,1),  timeLeft);
             
             
             
@@ -159,12 +167,12 @@ for currentBlkNum = 1:numReps
                 stimCmpEvents(end+1,:)= addCmpEvents('STIM_ON');
             end
             
-            melanopsinStimON(ardBoard, channel ,levelStim(trialCnd),stimTime*1000);
+            melanopsinStimON(ardBoard, channel ,levelStim(trialCnd, channel-7),stimTime*1000);
             WaitSecs(stimTime);
             
             if doNotSendEvents ==0
                 %                 AnalogueOutEvent(daq, 'STIM_OFF');
-                err = DigiOut(daq, 0, onOff, 0.1);
+                err = DigiOut(daq, 0, offNum, 0.1);
                 stimCmpEvents(end+1,:)= addCmpEvents('STIM_OFF');
             end
             
