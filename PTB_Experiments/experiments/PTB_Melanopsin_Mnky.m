@@ -1,4 +1,6 @@
 function PTB_Melanopsin_Mnky(numCnd, preStimTime, stimTime, postStimTime, numReps, doNotSendEvents)
+% NEEDS TO BE UPDATED!!!!!!!!!!!!!!!!
+%
 % Visual stimulus script with uses Paul's sheeple arduino LED stimulator to
 % flash blue and red light stimulus. Sends events out to the Bruker Prairie
 % 2P computer via Measurement Computing USB-1208FS

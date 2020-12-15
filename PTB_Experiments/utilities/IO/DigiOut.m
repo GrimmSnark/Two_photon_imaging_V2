@@ -4,6 +4,6 @@ function err = DigiOut(daq, port, signal, waitTime)
 
 err = DaqDOut(daq,port,signal);
 WaitSecs(waitTime);
-err = DaqDOut(daq,port,signal);
+err = DaqDOut(daq,port,0);
 
 end

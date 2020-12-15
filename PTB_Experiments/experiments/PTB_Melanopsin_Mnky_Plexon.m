@@ -1,7 +1,7 @@
 function PTB_Melanopsin_Mnky_Plexon(numCnd, preStimTime, stimTime, postStimTime, numReps, doNotSendEvents)
 % Visual stimulus script with uses Paul's sheeple arduino LED stimulator to
 % flash blue and red light stimulus. Sends events out to the PLexon system
-% with indivdual bit events (stim ON, stim OFF) via  Measurement 
+% with indivdual bit events (stim ON, stim OFF) via  Measurement
 % Computing USB-1208FS
 %
 % Inputs: numCnd - number of stimulus levels
@@ -33,25 +33,25 @@ onNum = 1;
 offNum = 8;
 
 % open arduino
-ardBoard = serial('COM4', 'BaudRate', 9600,'Terminator','CR/LF');
+ardBoard = serial('COM5', 'BaudRate', 9600,'Terminator','CR/LF');
 fopen(ardBoard);
 
 
-dataDir = 'C:\PostDoc Docs\Ca Imaging Project\PTB_Timing_Files\'; % save dir for timing files
+dataDir = 'C:\Users\pgamlin\Desktop\PTB_Files\'; % save dir for timing files
 timeSave = datestr(now,'yyyymmddHHMMSS');
 indentString = 'MelanopsinMnky_';
 
 stimCmpEvents = [1 1] ;
 
-levels = linspace(65535,0,numCnd+1);
-levelStim = levels(2:end);
+% levels = linspace(65535,0,numCnd+1);
+% levelStim = levels(2:end);
 
-% log stim level    blue   red 
+% log stim level         blue   red
 levelStim = ...
-[-0.5               65460  65466; 
-0.5                 65272  65331;
-1.5                 64235  64150;
-2.5                 52895  51800];
+    [-0.5               65460  65466;
+    0.5                 65272  65331;
+    1.5                 64235  64150;
+    2.5                 52895  51800];
 
 
 
@@ -60,7 +60,7 @@ stimParams.preStimTime = preStimTime;
 stimParams.stimTime = stimTime;
 stimParams.postStimTime = postStimTime;
 stimParams.numReps = numReps;
-stimParams.numCnd = numCnd;
+stimParams.numCnd = size(levelStim, 1) * 2;
 stimParams.levelStim = levelStim;
 
 
@@ -72,7 +72,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Display total experiment predicted time and query continue.....
 
-lengthofTrial = preStimTime + stimTime + postStimTime;
+lengthofTrial = preStimTime + stimTime + postStimTime + 1;
 totalTrialNo = (numCnd*2) * numReps;
 totalTime = lengthofTrial * totalTrialNo;
 
@@ -128,7 +128,7 @@ for currentBlkNum = 1:numReps
             fprintf(['Block No: %i of %i \n'...
                 'Condition No: %i of %i \n' ...
                 'LED Color: %s \n' ...
-                'Intensity: %d log \n'...
+                'Intensity: %.1f log \n'...
                 'Estimated Time to Finish = %.1f minutes \n' ...
                 '############################################## \n'] ...
                 ,currentBlkNum, numReps, counter, size(levelStim,1)*2, channelText, levelStim(trialCnd,1),  timeLeft);
@@ -161,14 +161,16 @@ for currentBlkNum = 1:numReps
                 stimCmpEvents(end+1,:)= addCmpEvents('PRESTIM_OFF');
             end
             
+            melanopsinStimON(ardBoard, channel ,levelStim(trialCnd, channel-7),stimTime*1000);
+            
             if doNotSendEvents ==0
                 %                 AnalogueOutEvent(daq, 'STIM_ON');
+                WaitSecs(1);
                 err = DigiOut(daq, 0, onNum, 0.1);
                 stimCmpEvents(end+1,:)= addCmpEvents('STIM_ON');
             end
             
-            melanopsinStimON(ardBoard, channel ,levelStim(trialCnd, channel-7),stimTime*1000);
-            WaitSecs(stimTime);
+            WaitSecs(stimTime-0.1);
             
             if doNotSendEvents ==0
                 %                 AnalogueOutEvent(daq, 'STIM_OFF');
