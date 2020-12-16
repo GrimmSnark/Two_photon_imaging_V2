@@ -1,11 +1,10 @@
-function PTB_Melanopsin_Mnky_Plexon(numCnd, preStimTime, stimTime, postStimTime, numReps, doNotSendEvents)
+function PTB_Melanopsin_Mnky_Plexon(preStimTime, stimTime, postStimTime, numReps, useBackgroundScreen, doNotSendEvents)
 % Visual stimulus script with uses Paul's sheeple arduino LED stimulator to
 % flash blue and red light stimulus. Sends events out to the PLexon system
 % with indivdual bit events (stim ON, stim OFF) via  Measurement
 % Computing USB-1208FS
 %
-% Inputs: numCnd - number of stimulus levels
-%         preStimTime - prestimulus time in seconds
+% Inputs: preStimTime - prestimulus time in seconds
 %         stimTime - stimulus on time in seconds
 %         postStimTime - inter trial interval in seconds
 %         numReps - number of repeats of each stimulus
@@ -13,6 +12,18 @@ function PTB_Melanopsin_Mnky_Plexon(numCnd, preStimTime, stimTime, postStimTime,
 %                           used for testing purposes
 
 %% set up parameters of stimuli
+clc
+sca;
+
+% digital On/Off numbers
+onNum = 1;
+offNum = 8;
+
+backgroundColor = [0.5 0.5 0.5]; % gray
+
+if nargin < 5 || isempty(useBackgroundScreen)
+    useBackgroundScreen = 0;
+end
 
 if nargin < 6 || isempty(doNotSendEvents)
     doNotSendEvents = 0;
@@ -27,10 +38,6 @@ if doNotSendEvents ==0
         daq = DaqDeviceIndex([],0);
     end
 end
-
-% digital On/Off numbers
-onNum = 1;
-offNum = 8;
 
 % open arduino
 ardBoard = serial('COM5', 'BaudRate', 9600,'Terminator','CR/LF');
@@ -69,11 +76,11 @@ if doNotSendEvents ==0
 end
 
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Display total experiment predicted time and query continue.....
 
 lengthofTrial = preStimTime + stimTime + postStimTime + 1;
-totalTrialNo = (numCnd*2) * numReps;
+totalTrialNo = (size(levelStim, 1) * 2) * numReps;
 totalTime = lengthofTrial * totalTrialNo;
 
 disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
@@ -94,9 +101,43 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% start experiment
 
+% set up screen
+if useBackgroundScreen == 1
+    
+    Screen('Preference', 'VisualDebugLevel', 0); % removes welcome screen
+    Screen('Preference','SkipSyncTests', 0);
+    PsychDefaultSetup(2); % PTB defaults for setup
+    
+    screenNumber = max(Screen('Screens')); % makes display screen the secondary one
+    PsychImaging('PrepareConfiguration');
+    
+    % try to open screen, can have issues on windows, so retry till it works
+    count = 0;
+    errorCount = 0;
+    while count == errorCount
+        try
+            [windowPtr, ~] = PsychImaging('OpenWindow', screenNumber, backgroundColor); %opens screen and sets background color
+        catch
+            disp(['Screen opening error detected......retrying']);
+            errorCount = errorCount+1;
+        end
+        count = count+1;
+    end
+    
+    % load gamma table
+    try
+        load 'C:\All Docs\calibrations\gammaTableGamma.mat'
+    catch
+        load 'C:\PostDoc Docs\Two Photon Rig\calibrations\LCD monitor\gammaTableGamma.mat'
+    end
+    
+    oldTable = Screen('LoadNormalizedGammaTable', windowPtr, gammaTable1*[1 1 1]);
+    
+end
+
+
 if doNotSendEvents ==0
     DaqDConfigPort(daq,0,0); % configure port A for output
-    
     %     DaqDConfigPort(daq,1,1) % configure port B for input
 end
 
@@ -211,4 +252,9 @@ if doNotSendEvents ==0
     saveCmpEventFile(stimCmpEvents, dataDir, indentString, timeSave);
 end
 
+if useBackgroundScreen == 1
+    Screen('LoadNormalizedGammaTable', windowPtr, oldTable);
+    % Clear screen
+    sca;
+end
 end
