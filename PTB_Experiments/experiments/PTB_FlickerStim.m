@@ -12,7 +12,7 @@ p.addParameter('imageSet2Use', 'C:\PostDoc Docs\code\matlab\Two_photon_imaging_V
 p.parse(varargin{:});
 
 %Stimulus
-offColor = [0.5 0.5 0.5];
+offColor = [0 0.5 0.5];
 
 switch stimType
     case 1 % flicker block color
@@ -39,7 +39,7 @@ screenStimCentre = [0.5 * screenXpixels , 0.5 * screenYpixels]; % screen centre
 
 
 PsychImaging('PrepareConfiguration');
-% Screen('Preference', 'SkipSyncTests', 1);
+Screen('Preference', 'SkipSyncTests', 1);
 % Screen('Preference', 'ScreenToHead', 0, 0, 1);
 
 % try to open screen, can have issues on windows, so retry till it works
@@ -183,7 +183,7 @@ while ~KbCheck
         for frameNo =1:totalNumFrames % duty ON presentation loop
             
             
-            Screen('DrawTexture', windowPtr, flickerImagePtr, [], [], 0);
+            Screen('DrawTexture', windowPtr, flickerImagePtr, [], [] , 0, 0 , [], [0 1 1]);
             vbl = Screen('Flip', windowPtr, vbl + frameWaitTime);
             
             % Abort requested? Test for keypress:
@@ -196,6 +196,48 @@ while ~KbCheck
         if KbCheck
             break;
         end
+        
+        elseif stimType == 5
+         %% For case 5, repeat white noise stimulus set with block color
+
+        whiteNoiseStim=imresize(double(im2bw(rand(40,40),.5)),36,'nearest');
+        flickerImagePtr = Screen('MakeTexture', windowPtr, whiteNoiseStim);
+        
+        for frameNo =1:totalNumFrames % duty ON presentation loop
+            
+            
+            Screen('DrawTexture', windowPtr, flickerImagePtr, [], [] , 0, 0 , [], [0 1 1]);
+            vbl = Screen('Flip', windowPtr, vbl + frameWaitTime);
+            
+            % Abort requested? Test for keypress:
+            if KbCheck
+                break;
+            end
+        end % end stim presentation loop
+       
+        % Abort requested? Test for keypress:
+        if KbCheck
+            break;
+        end
+        
+        for frameNo =1:totalNumFrames % duty OFF presentation loop
+            %draw on rect
+            Screen('FillRect', windowPtr, offColor , [] );
+            
+            %draw on rect
+            Screen('Flip', windowPtr);
+            
+            % Abort requested? Test for keypress:
+            if KbCheck
+                break;
+            end
+        end % end stim presentation loop
+        
+        % Abort requested? Test for keypress:
+        if KbCheck
+            break;
+        end
+
     end
 end
 
