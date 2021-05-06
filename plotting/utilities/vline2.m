@@ -56,7 +56,6 @@ function varargout = vline2(varargin)
 
 % Parse and verify inputs
 [all_x_pos, all_axes, lineopts, all_labels, do_clear, opts] = parse_inputs(varargin{:});
-close gcf
 
 num_axes = length(all_axes);
 h_line = cell(num_axes,1);
@@ -113,8 +112,10 @@ for i = 1:num_axes
     
     % Add tag to line so we can find it later.
     % Also, hide the line from 'findobj'.
-    set(h_line{:}, 'tag', 'vline', 'handlevisibility', 'off')
-    
+%     set(h_line{:}, 'tag', 'vline', 'handlevisibility', 'off')
+
+       set(h_line{i}, 'tag', 'vline', 'handlevisibility', 'off')
+
     % Add labels
     h_text{i} = add_labels(h_axes, x, labels, h_line{i}, opts);
     

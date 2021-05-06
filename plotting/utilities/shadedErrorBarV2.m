@@ -77,6 +77,7 @@ narginchk(3,inf)
 params = inputParser;
 params.CaseSensitive = false;
 params.addParameter('lineProps', '-k', @(x) ischar(x) | iscell(x));
+params.addParameter('DisplayName', '', @(x) ischar(x) | iscell(x));
 params.addParameter('transparent', true, @(x) islogical(x) || x==0 || x==1);
 params.addParameter('patchSaturation', 0.2, @(x) isnumeric(x) && x>=0 && x<=1);
 params.addParameter('Axis', []);
@@ -88,6 +89,7 @@ lineProps =  params.Results.lineProps;
 transparent =  params.Results.transparent;
 patchSaturation = params.Results.patchSaturation;
 axis2Use = params.Results.Axis;
+dispName = params.Results.DisplayName;
 
 if ~iscell(lineProps), lineProps={lineProps}; end
 
@@ -140,7 +142,7 @@ if ~initialHoldStatus
     end
 end
 
-H = makePlot(x,y,errBar,lineProps,transparent,patchSaturation, axis2Use);
+H = makePlot(x,y,errBar,lineProps,transparent,patchSaturation, axis2Use, dispName);
 
 if ~initialHoldStatus  
     if ~isempty(axis2Use)
@@ -156,12 +158,12 @@ end
 
 
 
-function H = makePlot(x,y,errBar,lineProps,transparent,patchSaturation, axis2Use)
+function H = makePlot(x,y,errBar,lineProps,transparent,patchSaturation, axis2Use, dispName)
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Plot to get the parameters of the line
 
-    H.mainLine=plot(axis2Use,x,y,lineProps{:});
+    H.mainLine=plot(axis2Use,x,y,lineProps{:}, 'DisplayName', dispName);
 
 
     % Work out the color of the shaded region and associated lines.
@@ -205,11 +207,18 @@ function H = makePlot(x,y,errBar,lineProps,transparent,patchSaturation, axis2Use
 
     set(H.patch,'facecolor',patchColor, ...
         'edgecolor','none', ...
-        'facealpha',faceAlpha)
+        'facealpha',faceAlpha);
+    
+    H.patch.Annotation.LegendInformation.IconDisplayStyle = 'off';
 
 
     %Make pretty edges around the patch. 
     H.edge(1)=plot(axis2Use,x,lE,'-','color',edgeColor);
+    H.edge(1).Annotation.LegendInformation.IconDisplayStyle = 'off';
+
+    
     H.edge(2)=plot(axis2Use,x,uE,'-','color',edgeColor);
+    H.edge(2).Annotation.LegendInformation.IconDisplayStyle = 'off';
+
 
 

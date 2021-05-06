@@ -290,6 +290,10 @@ for i =cellNo
         % plot trace 
         curentLineCol = lineCol(current2ndDim,:);
         shadedErrorBarV2(xlocations(x,:), trialTracesMean(:,x)', errorBarsPlot, 'lineprops' , {'color',[curentLineCol]});
+        
+        % plot stim on/off lines
+        vline2(subFighandle,[xlocations(x,1)+experimentStructure.stimOnFrames(1)-2  xlocations(x,1)+experimentStructure.stimOnFrames(2)-2 ], {'k--', 'k--' },{'', ''} );
+        
         prev2ndDim = current2ndDim;
         
         % add zero line
@@ -313,28 +317,30 @@ for i =cellNo
             if ~exist([experimentStructure.savePath 'STDs\'], 'dir')
                 mkdir([experimentStructure.savePath 'STDs\']);
             end
-            saveas(figHandle, [experimentStructure.savePath 'STDs\Orientation Tuning Cell ' num2str(i) '.tif']);
-            saveas(figHandle, [experimentStructure.savePath 'STDs\Orientation Tuning Cell ' num2str(i) '.svg']);
+            
+%             saveas(figHandle, ['C:\Users\msavage1\Box\Data\Mouse\contrastOrientation\fullSets\mon12_M3_20200828_run03\Orientation Tuning Cell ' num2str(i) ' Z' sprintf('%.2f',experimentStructure.ZScore(i)) '.tif']);
+            saveas(figHandle, [experimentStructure.savePath 'STDs\Orientation Tuning Cell ' num2str(i) ' Z' sprintf('%.2f',experimentStructure.ZScore(i)) '.tif']);
+            saveas(figHandle, [experimentStructure.savePath 'STDs\Orientation Tuning Cell ' num2str(i) ' Z' sprintf('%.2f',experimentStructure.ZScore(i)) '.svg']);
         elseif useSTDorSEM == 2
             if ~exist([experimentStructure.savePath 'SEMs\'], 'dir')
                 mkdir([experimentStructure.savePath 'SEMs\']);
             end
-            saveas(figHandle, [experimentStructure.savePath 'SEMs\Orientation Tuning Cell ' num2str(i) '.tif']);
-            saveas(figHandle, [experimentStructure.savePath 'SEMs\Orientation Tuning Cell ' num2str(i) '.svg']);
+            saveas(figHandle, [experimentStructure.savePath 'SEMs\Orientation Tuning Cell ' num2str(i) ' Z' sprintf('%.2f',experimentStructure.ZScore(i)) '.tif']);
+            saveas(figHandle, [experimentStructure.savePath 'SEMs\Orientation Tuning Cell ' num2str(i) ' Z' sprintf('%.2f',experimentStructure.ZScore(i)) '.svg']);
         end
     else % if using Neuro_corr data
         if useSTDorSEM == 1
             if ~exist([experimentStructure.savePath 'STDs\Neuro_corr\'], 'dir')
                 mkdir([experimentStructure.savePath 'STDs\Neuro_corr\']);
             end
-            saveas(figHandle, [experimentStructure.savePath 'STDs\Neuro_corr\Orientation Tuning Cell ' num2str(i) '.tif']);
-            saveas(figHandle, [experimentStructure.savePath 'STDs\Neuro_corr\Orientation Tuning Cell ' num2str(i) '.svg']);
+            saveas(figHandle, [experimentStructure.savePath 'STDs\Neuro_corr\Orientation Tuning Cell ' num2str(i) ' Z' sprintf('%.2f',experimentStructure.ZScore(i)) '.tif']);
+            saveas(figHandle, [experimentStructure.savePath 'STDs\Neuro_corr\Orientation Tuning Cell ' num2str(i) ' Z' sprintf('%.2f',experimentStructure.ZScore(i)) '.svg']);
         elseif useSTDorSEM == 2
             if ~exist([experimentStructure.savePath 'SEMs\Neuro_corr\'], 'dir')
                 mkdir([experimentStructure.savePath 'SEMs\Neuro_corr\']);
             end
-            saveas(figHandle, [experimentStructure.savePath 'SEMs\Neuro_corr\Orientation Tuning Cell ' num2str(i) '.tif']);
-            saveas(figHandle, [experimentStructure.savePath 'SEMs\Neuro_corr\Orientation Tuning Cell ' num2str(i) '.svg']);
+            saveas(figHandle, [experimentStructure.savePath 'SEMs\Neuro_corr\Orientation Tuning Cell ' num2str(i) ' Z' sprintf('%.2f',experimentStructure.ZScore(i)) '.tif']);
+            saveas(figHandle, [experimentStructure.savePath 'SEMs\Neuro_corr\Orientation Tuning Cell ' num2str(i) ' Z' sprintf('%.2f',experimentStructure.ZScore(i)) '.svg']);
         end
     end
     close;

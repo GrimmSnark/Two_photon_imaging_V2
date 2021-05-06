@@ -108,7 +108,7 @@ for x = 1:length(filepaths)
         if ~isempty(OSIMetrics)
             % add in cell channel dual expression if available
             if isprop(experimentStructure, anatomicalMarker2Extract)
-                OSIMetrics(:,1,length(metricIdentifiers)+1) = eval(['experimentStructure.' anatomicalMarker2Extract]);
+                OSIMetrics(:,:,length(metricIdentifiers)+1) = repmat(eval(['experimentStructure.' anatomicalMarker2Extract]), 1, size(OSIMetrics,2));
             end
             
             

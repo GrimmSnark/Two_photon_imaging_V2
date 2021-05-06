@@ -66,6 +66,8 @@ if ~isempty(listEntry) % if you want to get data from a list
             chunkSuffix{b} = [ chunkSuffix{b} '.' varargin{i}];
         end
         
+        
+        if length(eval(structStringList)) > 1
             counter =0;
             for i=1:length(eval(structStringList)) % runs through the list
                 
@@ -78,6 +80,18 @@ if ~isempty(listEntry) % if you want to get data from a list
                     end
                 end
             end
+        else
+            counter =0;
+                for x =1:length(listEntry)
+                    counter = counter +1;
+                    outputValue{counter} = eval([structStringList '.' chunkSuffix{1} '{x}.' chunkSuffix{2}]);
+                    
+                    if isNumeric % converts data to numbers
+                        outputValue{counter} =  str2num(outputValue{counter});
+                    end
+                end
+            
+        end
             
             if isNumeric
                 outputValue = cell2mat(outputValue);

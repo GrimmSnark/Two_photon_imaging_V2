@@ -17,7 +17,10 @@ essentialEvents ={'TRIAL_START', 'PARAM_START', 'PARAM_END', 'TRIAL_END'}; %list
 essentialEventsNum = stringEvent2Num(essentialEvents, codes);
 
 
-eventArray = readEventFilePrairie(experimentStructure.prairiePathVoltage, []); % read in events file
+ eventArray = readEventFilePrairie(experimentStructure.prairiePathVoltage, []); % read in events file
+
+% eventArray = readEventFilePrairieV2(experimentStructure.prairiePathVoltage, []); % read in events file
+
 
 %% if path to PTB file is set check consistency between set and recorded events
 PTBPath = dir([experimentStructure.prairiePath '*.mat']);
@@ -86,8 +89,11 @@ if ~isempty(invalidTrials)
     
     for xx = invalidTrials
         % get the current trial events from decoded events and PTB
-        currentPTBTrial = PTBeventArray(trialStartPositionPTB(xx):trialStartPositionPTB(xx+1)-1,2);
-        
+        try
+            currentPTBTrial = PTBeventArray(trialStartPositionPTB(xx):trialStartPositionPTB(xx+1)-1,2);
+        catch
+            currentPTBTrial = PTBeventArray(trialStartPositionPTB(xx):end-1,2);
+        end
         % each essential event check that the number of occurances match
         % up
         for aa = essentialEventsNum
@@ -167,15 +173,40 @@ nonEssentialEventNumbers(flagVector) =[];
 % remove zeros and any not used events.... this may cause errors if you
 % do not keep prairieCodes.m updated  with any changes in event usage
 nonEssentialEventNumbers(nonEssentialEventNumbers ==0) = [];
+nonEssentialEventNumbers(nonEssentialEventNumbers ==1) = [];
+
 
 % check if events are used in experiment at all
+subtractOneFlag = 0;
 checkEventUsage = false(length(nonEssentialEventNumbers),1);
 for x = 1:length(nonEssentialEventNumbers)
     if ~isempty(codes{nonEssentialEventNumbers(x)})
         checkEventUsage(x) = true;
+    elseif  ~isempty(codes{nonEssentialEventNumbers(x)-1})
+        nonEssentialEventNumbers(x) = nonEssentialEventNumbers(x)-1;
+        checkEventUsage(x) = true;
+        
+        subtractOneFlag = 1;
     end
 end
-nonEssentialEventNumbers = nonEssentialEventNumbers(checkEventUsage);
+
+if subtractOneFlag == 1
+    nonEssentialCodes(:,2,:) = nonEssentialCodes(:,2,:)-1;
+    
+    % remove any event numbers which are equal to essential event numbers
+    flagVector = false(size(nonEssentialEventNumbers));
+    
+    for qq = 1:length(nonEssentialEventNumbers)
+        if any(essentialEventsNum(1:end-1) == nonEssentialEventNumbers(qq))
+            flagVector(qq) = 1;
+        end
+    end
+    
+    nonEssentialEventNumbers(flagVector) =[];    
+end
+
+nonEssentialEventNumbers = unique(nonEssentialEventNumbers);
+% nonEssentialEventNumbers = nonEssentialEventNumbers(checkEventUsage);
 
 % for each non essential event
 for i =1:length(nonEssentialEventNumbers)
@@ -221,6 +252,10 @@ for i =1:length(nonEssentialEventNumbers)
             % gets mismatched trial
             currentTrial= nonEssentialCodes(:,:,indexOfMismatchedTrials(z));
             
+%             if subtractOneFlag == 1
+%                 currentTrial = currentTrial(:,2)-1;
+%             end
+            
             % gets index of events of interest and  corresponding
             % timestamps
             currentIndexOfCodes = currentTrial == (nonEssentialEventNumbers(i));
@@ -259,7 +294,7 @@ for i =1:length(nonEssentialEventNumbers)
                 while sum(indexOfBoth(:,2,indexOfMismatchedTrials(z))) ~= trialEventAverage
                     % this loop tryones to find events +/- counter of intented
                     % event
-                    disp('Trying to fix miscoded event entries');
+%                     disp('Trying to fix miscoded event entries');
                     
                     if counter == 5 % if we get too far from intended signal leave loop
                         break
@@ -340,8 +375,24 @@ for i =1:length(nonEssentialEventNumbers)
                 
                 totalNoEvent = length(find(PTB_currentTrial == nonEssentialEventNumbers(i)));
                 
-                % if the number of PTB events is equal to expected then copy across
-                if totalNoEvent == trialEventAverage
+                if totalNoEvent == 1 && trialEventAverage == 1 % if missing only single event
+                     PTB_currentTrialFirstEvent = find(PTB_currentTrial(:,2)==nonEssentialEventNumbers(i),1);
+                     ind2Match = strfind(currentTrial(:,2)', PTB_currentTrial(PTB_currentTrialFirstEvent+1:PTB_currentTrialFirstEvent+3,2)');
+                     
+                     timeDiff = PTB_currentTrial(PTB_currentTrialFirstEvent+1,1)-  PTB_currentTrial(PTB_currentTrialFirstEvent,1);
+                     
+                     newEvent = [currentTrial(ind2Match,1)-timeDiff*1000 PTB_currentTrial(PTB_currentTrialFirstEvent,2)];
+                     
+                     if ind2Match == 1 % if is the first event missing
+                         currentTrial =  [newEvent ; currentTrial];
+                     else % if any other event
+                         currentTrial =  [currentTrial(1:ind2Match-1,:); newEvent ; currentTrial(ind2Match:end,:)];
+                     end
+                     
+                     nonEssentialCodes(:,:,indexOfMismatchedTrials(ww)) = 0;
+                     nonEssentialCodes(:,:,indexOfMismatchedTrials(ww)) = currentTrial(1:size(nonEssentialCodes,1),:);
+                
+                elseif totalNoEvent == trialEventAverage % if the number of PTB events is equal to expected then copy across
                     PTB_currentTrialFirstEvent = find(PTB_currentTrial(:,2)==nonEssentialEventNumbers(i),1);
                     PTB_currentTrialLastEvent = find(PTB_currentTrial(:,2)==nonEssentialEventNumbers(i),1,'last');
                     
@@ -363,7 +414,7 @@ for i =1:length(nonEssentialEventNumbers)
                     % rebuild current trial
                     currentTrial =  [currentTrial(1:currentTrialFirstEvent-1,:); PTBCurrentEvent ;currentTrial(currentTrialLastEvent+1:currentTrialLastIndex,:)];
                     nonEssentialCodes(:,:,indexOfMismatchedTrials(ww)) = 0;
-                    nonEssentialCodes(1:length(currentTrial),:,indexOfMismatchedTrials(ww)) = currentTrial;
+                    nonEssentialCodes(:,:,indexOfMismatchedTrials(ww)) = currentTrial(1:size(nonEssentialCodes,1),:);
                     
                 end
 
@@ -377,6 +428,9 @@ for i =1:length(nonEssentialEventNumbers)
     end
 end
 
+% clean up empty cells
+emptyCells = find(cellfun('isempty',nonEssentialEvent(2,:)));
+nonEssentialEvent(:,emptyCells) =[];
 %% build trial condition structure
 experimentStructure.rawTrials = rawTrials;
 experimentStructure.validTrial = validTrial;

@@ -1,4 +1,4 @@
-function runCaAnalysisWrapper(experimentDayFilepath, chooseROIsFlag, startDirNo, channel2Use, checkChannelOverlap)
+function runCaAnalysisWrapper(experimentDayFilepath, chooseROIsFlag, startDirNo, channel2Use, checkChannelOverlap, useNeuralNet4ROIs)
 % wrapper to batch choose ROIs and run calcium trace extraction from chosen
 % cells for an experiment day folder
 %
@@ -20,6 +20,11 @@ function runCaAnalysisWrapper(experimentDayFilepath, chooseROIsFlag, startDirNo,
 %                              two color channels
 %                               0 == do not categorize
 %                               1 == categorize (DEFAULT)
+%         useNeuralNet4ROIs: Inidicates whether you want to use the neural
+%                            net to prime ROIs for cells
+%                               0 == do not use net
+%                               1 == use net (DEFAULT)
+
 
 
 %% set defaults
@@ -40,6 +45,9 @@ if nargin <5 || isempty(checkChannelOverlap)
     checkChannelOverlap = 1;
 end
 
+if nargin <6 || isempty(useNeuralNet4ROIs)
+    useNeuralNet4ROIs = 1;
+end
 
 %% start analysis
 
@@ -66,7 +74,7 @@ folders2Process(index2Remove) = [];
 %choose all ROIs if flag set
 if chooseROIsFlag == 1
     for i = startDirNo:length(folders2Process)
-       killFlag = chooseROIs([folders2Process(i).folder '\'], 1, [], checkChannelOverlap);
+       killFlag = chooseROIs([folders2Process(i).folder '\'], useNeuralNet4ROIs, [], checkChannelOverlap);
     
     if killFlag ==1 % if you choose to end script
        return 

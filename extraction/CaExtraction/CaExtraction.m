@@ -133,7 +133,7 @@ for q =1:experimentStructure.cellCount
     
     % Compute a moving baseline with a 60s percentile lowpass filter smoothed by a 60s Butterworth filter
     offset = 5000; % helps get around dividing my zero errors...
-    [~,percentileFiltCutOff(q)] = estimate_percentile_level((experimentStructure.correctedF(q,:)'+offset),length(registeredVol),length(registeredVol));
+    [~,percentileFiltCutOff(q)] = estimate_percentile_level((experimentStructure.correctedF(q,:)'+offset),size(registeredVol,3),size(registeredVol,3));
     
    lowPassFiltCutOff    = 30; %in seconds
     experimentStructure.baseline(q,:)  = baselinePercentileFilter((experimentStructure.correctedF(q,:)'+offset),experimentStructure.rate,lowPassFiltCutOff,percentileFiltCutOff(q));

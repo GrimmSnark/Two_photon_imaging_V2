@@ -60,8 +60,8 @@ function hfig = tightfig(hfig)
         % colorbars do not have tightinset property
         for cbind = 1:numel(hcbar)
             %         fsize = cell2mat(get(hax, 'FontSize'));
-            [cbarpos, cbarti] = colorbarpos (hcbar);
-
+            %             [cbarpos, cbarti] = colorbarpos (hcbar);
+            [cbarpos, cbarti] = colorbarpos (hcbar(cbind));
             pos = [pos; cbarpos];
             ti = [ti; cbarti];
         end

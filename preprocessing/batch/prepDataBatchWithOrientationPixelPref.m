@@ -133,7 +133,7 @@ if isempty(folders2Process)
     folders2Process = dir([filePath '\**\experimentStructure.mat']);
 end
 
-for i = startDirNo:length(folders2Process)
+for i = 1:length(folders2Process)
     pixelwiseOrientationSelectivity([folders2Process(i).folder '\'], noOrientations,angleMax, secondCndDimension,useSTDorMean, channel2register);
 end
 

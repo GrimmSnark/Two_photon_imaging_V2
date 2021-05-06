@@ -137,7 +137,7 @@ end
 for z = 1:secondCndDimension
     %% plot orientation pref image
     % reshape into orientation image
-    orientationPrefImage = reshape(pixelPrefArray(:,1,z), 512, 512);
+    orientationPrefImage = reshape(pixelPrefArray(:,1,z), experimentStructure.pixelsPerLine, experimentStructure.pixelsPerLine);
     % rescale into colormap
     orientationPrefImageConverted = (orientationPrefImage/180)*256;
     figure('Position' ,[3841,417,1280,951.333333333333])
@@ -155,7 +155,7 @@ for z = 1:secondCndDimension
     close;
     %% plot orientation selectivity image
     % reshape into orientation images
-    orientationAmplitudeImage =  reshape(pixelPrefArray(:,2,z), 512, 512);
+    orientationAmplitudeImage =  reshape(pixelPrefArray(:,2,z), experimentStructure.pixelsPerLine, experimentStructure.pixelsPerLine);
     
     % correct for NaN and Inf values
     orientationAmplitudeImage(isnan(orientationAmplitudeImage)) = 0;
