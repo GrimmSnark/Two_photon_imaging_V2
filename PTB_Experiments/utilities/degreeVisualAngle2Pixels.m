@@ -1,4 +1,4 @@
-function sizeInPixels = degreeVisualAngle2Pixels(setup, sizeInVisualAngle)
+function [sizeInPixels, degreePerPix] = degreeVisualAngle2Pixels(setup, sizeInVisualAngle)
 %converts sizeInVisualAngle (size of object in visual angle) into pixel 
 %sizes based on setup information (add to switch case for more setups)
 

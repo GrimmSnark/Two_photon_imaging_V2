@@ -39,7 +39,7 @@ screenStimCentre = [0.5 * screenXpixels , 0.5 * screenYpixels]; % screen centre
 
 
 PsychImaging('PrepareConfiguration');
-Screen('Preference', 'SkipSyncTests', 1);
+% Screen('Preference', 'SkipSyncTests', 1);
 % Screen('Preference', 'ScreenToHead', 0, 0, 1);
 
 % try to open screen, can have issues on windows, so retry till it works
