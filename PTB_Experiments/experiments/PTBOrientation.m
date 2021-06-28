@@ -1,4 +1,4 @@
-function PTBOrientation(width, stimCenter, preStimTime, stimTime, rampTime,  numReps, dropRed, doNotSendEvents)
+ function PTBOrientation(width, stimCenter, preStimTime, stimTime, rampTime,  numReps, dropRed, doNotSendEvents)
 % Visual stimulus script which presents moving sinsuiodal gratings of
 % different orientations
 %

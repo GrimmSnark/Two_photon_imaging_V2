@@ -1,12 +1,20 @@
-function experimentStructure = splitDFIntoConditions(experimentStructure)
+function experimentStructure = splitDFIntoConditions(experimentStructure, limitBlocks)
 % Splits up the calcium imaging traces into conditions and makes prestim
 % and stim window averages so that analysis is easier in future scripts
 %
 % Input- experimentStructure: structure containing all experiment info
 %
+%          limitBlocks: set number of condition blocks to use (DEAFULT =
+%          all)
+%
 % Output- experimentStructure: updated structure containing all experiment
 %                              info
 
+%% defaults
+
+if nargin < 2 || isempty(limitBlocks)
+    limitBlocks = eval('length(experimentStructure.cndTrials{x})');
+end
 
 %% get trial length and stim on frame lengths
 analysisFrameLength = round(mean(experimentStructure.EventFrameIndx.TRIAL_END - experimentStructure.EventFrameIndx.PRESTIM_ON));
@@ -23,6 +31,15 @@ experimentStructure.rawFperCnd = [];
 experimentStructure.dFperCndMean  = [];
 experimentStructure.dFperCndSTD  = [];
 
+experimentStructure.dFpreStimWindow =[];
+experimentStructure.dFpreStimWindowAverage =[];
+experimentStructure.dFstimWindow =[];
+experimentStructure.dFstimWindowAverage =[];
+experimentStructure.dFpreStimWindowFBS =[];
+experimentStructure.dFpreStimWindowAverageFBS =[];
+experimentStructure.dFstimWindowFBS =[];
+experimentStructure.dFstimWindowAverageFBS =[];
+
 experimentStructure.dFperCndMeanFBS  = [];
 experimentStructure.dFperCndSTDFBS  = [];
 
@@ -30,7 +47,8 @@ experimentStructure.dFperCndSTDFBS  = [];
 for p = 1:experimentStructure.cellCount % for each cell
     for  x =1:length(experimentStructure.cndTotal) % for each condition
         if any(experimentStructure.cndTotal(x)) % checks if there are any trials of that type
-            for y =1:length(experimentStructure.cndTrials{x}) % for each trial of that type
+%             for y =1:length(experimentStructure.cndTrials{x}) % for each trial of that type
+             for y =1:limitBlocks % for each trial of that type
                 
                 currentTrial = experimentStructure.cndTrials{x}(y); % gets current trial number for that cnd
                 currentTrialFrameStart = experimentStructure.EventFrameIndx.PRESTIM_ON(currentTrial);

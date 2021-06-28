@@ -94,6 +94,7 @@ y.Peak2Amp = f1.a2;
 y.Peak2Loc = f1.b2;
 y.Peak2Width = f1.c2;
 y.Offset = f1.d;
+y.rsquare = f2.rsquare;
 y.model = f1;
 y.modelTrace = feval(f1,10*([0:.1:35.9]'))';
 

@@ -80,6 +80,7 @@ y.Peak1Loc = f1.b1;
 y.Peak1Width = f1.c1;
 y.Offset = f1.d;
 y.model = f1;
+y.rsquare = f2.rsquare;
 y.modelTrace = feval(f1,10*([0:.1:17.9]'))';
 
 

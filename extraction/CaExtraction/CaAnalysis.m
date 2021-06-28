@@ -1,4 +1,4 @@
-function CaAnalysis(recordingDir, channel2Use)
+function CaAnalysis(recordingDir, channel2Use, limitBlocks)
 % function which runs main analysis on calcium imaging data recorded on
 % prairie bruker system. This function requires user input to define cell
 % ROIs and calculates dF/F with neuropil subtraction. Also splits dF traces
@@ -10,6 +10,9 @@ function CaAnalysis(recordingDir, channel2Use)
 %          channel2Use: can specify channel to analyse if there are more
 %                       than one recorded channel
 %                      (OPTIONAL) default = 2 (green channel)
+%
+%          limitBlocks: set number of condition blocks to use (DEAFULT =
+%          all)
 %
 % Output- experimentStructure: structure containing all experiment info
 
@@ -74,7 +77,7 @@ experimentStructure.averageROIRadius = averageROIRadius;
 experimentStructure = CaExtraction(experimentStructure, channel2Use);
 
 %% Split up traces into condition structure and save structure
-experimentStructure = splitDFIntoConditions(experimentStructure);
+experimentStructure = splitDFIntoConditions(experimentStructure, limitBlocks);
 
 % Clean up windows
 MIJ.closeAllWindows;

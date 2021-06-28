@@ -1,8 +1,12 @@
-function loadImagingData2FIJI(filepath2Use)
+function loadImagingData2FIJI(filepath2Use, registerFlag)
 
 
 
 %% set defaults
+
+if nargin <2 || isempty(registerFlag)
+   registerFlag = 1; 
+end
 
 usingRawData = 0;
 intializeMIJ;
@@ -47,6 +51,7 @@ if usingRawData ==0
         vol = volSplit;
     end
     
+    if registerFlag == 1
     for q = 1:size(vol,4)
         % apply imageregistration shifts if there are shifts to apply
         if isprop(experimentStructure, 'options_nonrigid') && ~isempty(experimentStructure.options_nonrigid) % if using non rigid correctionn
@@ -56,6 +61,9 @@ if usingRawData ==0
         else % if there are no motion correction options, ie the image stack loaded is already motion corrected
             registeredVol(:,:,:,q) = vol(:,:,:,q);
         end
+    end
+    else
+        registeredVol = vol;
     end
     
     if length(channelNo)>1

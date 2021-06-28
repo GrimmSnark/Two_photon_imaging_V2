@@ -8,6 +8,7 @@ sca;
 p = inputParser;
 p.addParameter('image2Use','C:\PostDoc Docs\code\matlab\Two_photon_imaging_V2\PTB_Experiments\',@isstr);
 p.addParameter('imageSet2Use', 'C:\PostDoc Docs\code\matlab\Two_photon_imaging_V2\PTB_Experiments\',@isstr);
+p.addParameter('imageOrder', 1 ,@(x) assert(isnumeric(x) && isscalar(x))); % imageOrder, 1 = random order the set, 2 = in series as loaded from dir
 
 p.parse(varargin{:});
 
@@ -24,6 +25,8 @@ switch stimType
         imageSet2UseFilepath = p.Results.imageSet2Use;
     case 4 % white noise stimulus
         
+    case 5 % repeat white noise stimulus set with block color
+
 end
 
 
@@ -152,7 +155,13 @@ while ~KbCheck
     elseif stimType == 3
         %% For case 3, repeat stimulus set from image
         
-        for imageNo = 1:length(flickerImagePtr)
+        if imageOrder == 1
+            imageOrderVector = randperm(length(flickerImagePtr));
+        elseif imageOrder == 2
+            imageOrderVector = 1:length(flickerImagePtr);
+        end
+        
+        for imageNo = imageOrderVector
             for frameNo =1:totalNumFrames % duty ON presentation loop
                 
                 Screen('DrawTexture', windowPtr, flickerImagePtr(imageNo), [], [], 0);

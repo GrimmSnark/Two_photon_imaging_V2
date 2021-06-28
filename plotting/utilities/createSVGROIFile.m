@@ -32,8 +32,8 @@ contour = cell(nROIs, 1);
 for i=1:nROIs
     labeledROI = zeros(imgSize);
     % Get center location for ROI object
-    X = roiObjects(i).getXBase-1; % add one because MATLAB arrays start at 1, while Java arrays start at 0.
-    Y = roiObjects(i).getYBase-1;
+    X = roiObjects(i).getXBase;
+    Y = roiObjects(i).getYBase;
     
     % Get local mask for ROI object
     localCellMask = roiObjects(i).getMask();

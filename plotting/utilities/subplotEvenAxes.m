@@ -18,4 +18,14 @@ maxX = max([axXLim{:}]);
 minX = min([axXLim{:}]);
 set(axH,'XLim',[minX maxX]);
 
+%% Z axis
+try
+axZLim =  get(axH,'ZLim');
+maxZ = max([axZLim{:}]);
+minZ = min([axZLim{:}]);
+set(axH,'ZLim',[minZ maxZ]);
+catch
+
+end
+
 end

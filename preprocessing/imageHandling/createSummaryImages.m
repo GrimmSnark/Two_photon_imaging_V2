@@ -1,4 +1,4 @@
-function experimentStructure = createSummaryImages(experimentStructure, imagingVol, saveRegMovie, experimentFlag, channelIdentifier, createChannelOverlapIm, GPUOverride)
+function experimentStructure = createSummaryImages(experimentStructure, imagingVol, saveRegMovie, experimentFlag, channelIdentifier, createChannelOverlapIm, GPUOverride, storeInExpObject)
 % Creates and saves a variety of summary images from the experimental data,
 % ie registered image stack, SD maps for prestim and stim period. This
 % function allows you to use GPU to calculate these images if you GPU
@@ -29,6 +29,10 @@ function experimentStructure = createSummaryImages(experimentStructure, imagingV
 %                     minimum and use it anyway to create images, in 
 %                     general GPU is MUCH faster than CPU!!! (Default == 0)
 %
+%        storeInExpObject: 0/1 flag to save prep images data into the
+%                          experimentStructure DEFAULT = 0, no save
+%                          NB 1 = save and causes HUGE .mat files
+%
 % Output- experimentStructure: experimentStructure updated
 
 %% defaults
@@ -44,6 +48,10 @@ if nargin <7 || isempty(GPUOverride)
     GPUOverride = 0;
 end
 
+if nargin <8 || isempty(storeInExpObject)
+    storeInExpObject = 0;
+end
+
 %%
 if saveRegMovie ==1
     %         savePath = createSavePath(dataDir, 1);
@@ -57,10 +65,10 @@ GPU_used = gpuDevice();
 if experimentFlag == 1
     if GPU_used.TotalMemory > 6e+9 || GPUOverride == 1% uses GPU to do calc if large enough
         % Create and save STD sums
-        [stimSTDSum, preStimSTDSum, stimMeanSum , preStimMeanSum ,experimentStructure] = createStimSTDAverageGPU(experimentStructure, imagingVol,channelIdentifier);        
+        [stimSTDSum, preStimSTDSum, stimMeanSum , preStimMeanSum ,experimentStructure] = createStimSTDAverageGPU(experimentStructure, imagingVol,channelIdentifier, storeInExpObject);        
     else  % otherwise uses CPU..
         % Create and save STD sums
-        [stimSTDSum, preStimSTDSum, stimMeanSum , preStimMeanSum ,experimentStructure] = createStimSTDAverage(experimentStructure, imagingVol, channelIdentifier);
+        [stimSTDSum, preStimSTDSum, stimMeanSum , preStimMeanSum ,experimentStructure] = createStimSTDAverage(experimentStructure, imagingVol, channelIdentifier, storeInExpObject);
     end
 end
 

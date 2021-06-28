@@ -51,6 +51,8 @@ if ~isfield(dots,'nDots') || isfield(dots, 'dotDensity')
     dots.nDots = round( dots.dotDensity * dots.apertureSize(1));
 end
 
+dots.direction = mod(dots.direction-90, 360); % setd the angle to match up with other pyschtoolbox angles
+
 %Calculate total number of dots across fields
 nDots = sum([dots.nDots]);
 

@@ -59,7 +59,7 @@ if nargin <5 || isempty(dataType)
     dataType = 'FBS';
 end
 
-if nargin <5 || isempty(zScoreThreshold)
+if nargin <6 || isempty(zScoreThreshold)
     zScoreThreshold = 4;
 end
 

@@ -1,4 +1,4 @@
-function [stimSTDSum, preStimSTDSum, stimMeanSum , preStimMeanSum ,experimentStructure] = createStimSTDAverage(experimentStructure, vol,channelIdentifier)
+function [stimSTDSum, preStimSTDSum, stimMeanSum , preStimMeanSum ,experimentStructure] = createStimSTDAverage(experimentStructure, vol,channelIdentifier, storeInExpObject)
 % Function to create STD sum images for prestim and stim times
 % Input- experimentStructure: structure for this experiement
 %
@@ -6,6 +6,10 @@ function [stimSTDSum, preStimSTDSum, stimMeanSum , preStimMeanSum ,experimentStr
 %        
 %        channelIdentifier: OPTIONAL, string for identifying channel if
 %        multiple exist
+%
+%        storeInExpObject: 0/1 flag to save prep images data into the
+%                          experimentStructure DEFAULT = 0, no save
+%                          NB 1 = save and causes HUGE .mat files
 %
 % Output- stimSTDSum: 2D image of summed STDs for stim trial window period
 %
@@ -22,6 +26,10 @@ function [stimSTDSum, preStimSTDSum, stimMeanSum , preStimMeanSum ,experimentStr
 
 if nargin<3
     channelIdentifier =[];
+end
+
+if nargin < 4 
+   storeInExpObject = 0; 
 end
 
 disp('Starting stim STD image calculation');
@@ -79,11 +87,12 @@ preStimMeanSum = rescale(sum(preStimMeanImage, 3))*65535;
 preStimMeanSum = uint16(preStimMeanSum);
 
 % add to experimentStructure
-
-eval(['experimentStructure.stimSTDImageCND' channelIdentifier ' = uint16(gather(stimSTDImageCND));'])
-eval(['experimentStructure.preStimSTDImageCND' channelIdentifier ' = uint16(gather(preStimSTDImageCND));' ])
-
-eval(['experimentStructure.stimMeanImageCND' channelIdentifier ' = uint16(gather(stimMeanImageCND));' ])
-eval(['experimentStructure.preStimMeanImageCND' channelIdentifier ' = uint16(gather(preStimMeanImageCND));'])
+if storeInExpObject == 1
+    eval(['experimentStructure.stimSTDImageCND' channelIdentifier ' = uint16(gather(stimSTDImageCND));'])
+    eval(['experimentStructure.preStimSTDImageCND' channelIdentifier ' = uint16(gather(preStimSTDImageCND));' ])
+    
+    eval(['experimentStructure.stimMeanImageCND' channelIdentifier ' = uint16(gather(stimMeanImageCND));' ])
+    eval(['experimentStructure.preStimMeanImageCND' channelIdentifier ' = uint16(gather(preStimMeanImageCND));'])
+end
 
 end
