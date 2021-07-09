@@ -1,4 +1,4 @@
-function readEventFileSetup(filepathData)
+function readEventFileSetupV2(filepathData)
 % This function analyses the output from testDAQOutSignal.m and produces a
 % look up table file (PrairieVoltageInfo.mat) for actual voltage levels to
 % correspond to event numbers used in experiments. This should only need to
@@ -21,7 +21,7 @@ function readEventFileSetup(filepathData)
 %  filepathData = 'D:\Data\2P_Data\Raw\Calibration\TTL_test\20200130\TSeries-01302020-0806-000\TSeries-01302020-0806-000_Cycle00001_VoltageRecording_001.csv';
  
  % 20210709
- filepathData = 'D:\Data\2P_Data\Raw\Mouse\gCamp6s\AAVretro_LS_M4\sigTest\TSeries-07092021-0848-002\TSeries-07092021-0848-002_Cycle00001_VoltageRecording_001.csv';
+ filepathData = 'D:\Data\2P_Data\Raw\Mouse\gCamp6s\AAVretro_LS_M4\sigTest\TSeries-07092021-0848-003\TSeries-07092021-0848-003_Cycle00001_VoltageRecording_001.csv';
 
 
 %% basic setup info
@@ -56,18 +56,20 @@ end
 % find first and last peak of every burst...
 
 % all peaks
-[peaks, ~]= findpeaks(rawEventData(:,2), 'MinPeakHeight', 0.03 );
+
+gradData = gradient(rawEventData(:,2));
+[peaks, peakGradValues]= findpeaks(gradData, 'MinPeakHeight', 0.006 );
+% 
+% plot(1:length(rawEventData(:,2)), rawEventData(:,2))
+% hold on
+% scatter(peakGradValues+1, rawEventData(peakGradValues+1,2), 'v');
+% 
+% peakValues =  rawEventData(peakGradValues+1,2)
+
 incrementAll = peaks(2:end)-peaks(1:end-1);
 incrementAll(incrementAll < 0.001) = NaN;
 incrementAll(incrementAll == 0) = NaN;
 increment = mean(incrementAll, 'omitnan');
-
-%first peaks of bursts
-removeMaximums = rawEventData(:,2) >= round(increment,2)-0.00015;
-rawEventDataFirsts = rawEventData;
-rawEventDataFirsts(removeMaximums,2) = 0;
-[firstPeaks, firstLocs]= findpeaks(rawEventDataFirsts(:,2), 'MinPeakHeight', 0.0175 , 'MinPeakDistance', 25000);
-
 
 % last peaks of bursts
 removeMaximums = rawEventData(:,2) > 4.110001;
@@ -76,20 +78,40 @@ rawEventDataLasts(removeMaximums,2) = 0;
 [lastPeaks, lastLocs]= findpeaks(rawEventData(:,2), 'MinPeakHeight', max(rawEventDataLasts(:,2))-increment, 'MinPeakDistance', 1000 );
 
 
+% use last peaks to find the first peaks of the following burst
+for x = 1:length(lastPeaks)-1
+    
+   tempPeaks =  peakGradValues(peakGradValues > lastLocs(x));
+   firstLocs(x) =  tempPeaks(1);
+end
+
+% plot(1:length(rawEventData(:,2)), rawEventData(:,2))
+% hold on
+% scatter(firstLocs+1, rawEventData(firstLocs+1,2), 'v');
+
+
+
+% %first peaks of bursts
+% removeMaximums = rawEventData(:,2) >= round(increment,2)-0.00015;
+% rawEventDataFirsts = rawEventData;
+% rawEventDataFirsts(removeMaximums,2) = 0;
+% [firstPeaks, firstLocs]= findpeaks(rawEventDataFirsts(:,2), 'MinPeakHeight', 0.0001, 'MinPeakDistance', 25000);
+
+
 % uncomment below if you want to plot the raw data together
 
 plot(1:length(rawEventData(:,2)), rawEventData(:,2))
 hold on
-scatter(firstLocs, firstPeaks, 'v');
+scatter(firstLocs, rawEventData(firstLocs,2), 'v');
 scatter(lastLocs, lastPeaks, 'v', 'r');
-plot(1:length(rawEventData(:,2)), rawEventDataFirsts(:,2));
+% plot(1:length(rawEventData(:,2)), rawEventDataFirsts(:,2));
 
 
 
 % segement out peak bursts between first and last
-for i =1:length(lastLocs)
+for i =1:length(lastLocs)-1
     
-    chunkedData(1:length(rawEventData(firstLocs(i)-100: lastLocs(i)+50 ,2)),i) = rawEventData(firstLocs(i)-100: lastLocs(i)+50 ,2);
+    chunkedData(1:length(rawEventData(firstLocs(i)-100: lastLocs(i+1)+50 ,2)),i) = rawEventData(firstLocs(i)-100: lastLocs(i+1)+50 ,2);
     
 end
 
@@ -99,7 +121,7 @@ for i = 1: length(nonzeros(chunkedData(1,:))) % for each burst
     % calculate peaks derivative 
     chunkDirvative = gradient(chunkedData(:,i));
     
-    [~, tempLocsDir]= findpeaks(chunkDirvative, 'MinPeakHeight', 0.001 , 'MinPeakDistance', 60); % find peaks based on the derivative
+    [~, tempLocsDir]= findpeaks(chunkDirvative, 'MinPeakHeight', 0.006 ); % find peaks based on the derivative
     
     chunkPeaksDir(1:length(chunkedData(tempLocsDir+1,i)),i) = chunkedData(tempLocsDir+1,i); % find the value of on of square wave +1 sample to accound for off by one error
     chunkLocsDir(1:length(tempLocsDir),i) = tempLocsDir; % colllate the index value of the peaks

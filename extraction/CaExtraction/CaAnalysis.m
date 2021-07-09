@@ -23,6 +23,10 @@ if nargin <2 || isempty(channel2Use)
     channel2Use = 2; % sets default channel to use if in multi channel recording
 end
 
+if nargin <3 || isempty(limitBlocks)
+    limitBlocks = []; % sets default channel to use if in multi channel recording
+end
+
 %% create appropriate filepaths
 % check folder is the the processed version
 folders2Process = dir([recordingDir '\experimentStructure.mat']);

@@ -54,8 +54,9 @@ OSI_FitStruct_LS.OSI = 0;
 % try to run this fit, sometimes may not work as response is too flat
 
 if  max(angles) > 180
-    x=interp1(dataMeans,linspace(1,length(angles),36));
-
+    x = interp1([ dataMeans dataMeans(1)],linspace(1,legnth(dataMeans)+1,37)); % wrap around first condition and interp to number required + 1
+    x = x(1:36); % limit to 36 numbers, ie input for dual guassian fit
+    
     try
         OSI_FitStruct_LS = dualGaussianFitMS(x);
         
@@ -67,7 +68,10 @@ if  max(angles) > 180
         
     end
 else
-    x=interp1(dataMeans,linspace(1,length(angles),18));
+    
+    x = interp1([ dataMeans dataMeans(1)],linspace(1,legnth(dataMeans)+1,19)); % wrap around first condition and interp to number required + 1
+    x = x(1:18); % limit to 18 numbers, ie input for single guassian fit
+    
     try
         OSI_FitStruct_LS = singleGaussianFit(x);
         

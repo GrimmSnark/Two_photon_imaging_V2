@@ -52,7 +52,8 @@ for q = 1: length(metrics2Extract)
         case 1
             metricIdentifiers{q} = 'OSI_CV';
         case 2
-            metricIdentifiers{q} = 'LSStruct.OSI';
+            %             metricIdentifiers{q} = 'LSStruct.OSI';
+            metricIdentifiers{q} = 'LSStruct.Peak1Width';
         case 3
             metricIdentifiers{q} = 'VHStruct.OSI_PR';
         case 4
@@ -97,7 +98,11 @@ for x = 1:length(filepaths)
                 % for the number of second dimension conditions, ie contrast,
                 % color etc
                 for b = 1:size(experimentStructure.OSIStruct,2)
-                    OSIMetrics(c,b,z) = eval(['experimentStructure.OSIStruct{' num2str(c) ',' num2str(b) '}.' metricIdentifiers{z}]);
+                    try
+                        OSIMetrics(c,b,z) = eval(['experimentStructure.OSIStruct{' num2str(c) ',' num2str(b) '}.' metricIdentifiers{z}]);
+                    catch
+                        OSIMetrics(c,b,z) = NaN;
+                    end
                 end
             end
         end

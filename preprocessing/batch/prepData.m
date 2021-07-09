@@ -199,9 +199,9 @@ if length(channelNo)> 1 % choose one channel to register if multiple exist
     % deal with first channel
     
     if ~isempty(blocks2Use) %if restricting to a certain number of blocks
-        experimentStructure =  createSummaryImages(experimentStructure,vol(:,:,startFrame2use:endFrame2Use), saveRegMovie, experimentFlag, channelNo{channel2register}, storeInExpObject);
+        experimentStructure =  createSummaryImages(experimentStructure,vol(:,:,startFrame2use:endFrame2Use), saveRegMovie, experimentFlag, channelNo{channel2register},[],[], storeInExpObject);
     else
-        experimentStructure =  createSummaryImages(experimentStructure,vol, saveRegMovie, experimentFlag, channelNo{channel2register}, storeInExpObject);
+        experimentStructure =  createSummaryImages(experimentStructure,vol, saveRegMovie, experimentFlag, channelNo{channel2register},[],[], storeInExpObject);
     end
     
     % deal with second channel
@@ -210,9 +210,9 @@ if length(channelNo)> 1 % choose one channel to register if multiple exist
     
     
     if ~isempty(blocks2Use) %if restricting to a certain number of blocks
-        experimentStructure =  createSummaryImages(experimentStructure,vol(:,:,startFrame2Use:endFrame2Use), saveRegMovie, experimentFlag, channelNo{channel2register}, [], [], storeInExpObject);
+        experimentStructure =  createSummaryImages(experimentStructure,vol(:,:,startFrame2Use:endFrame2Use), saveRegMovie, experimentFlag, channelNo{indForOtherChannel}, [], [], storeInExpObject);
     else
-        experimentStructure =  createSummaryImages(experimentStructure,vol, saveRegMovie, experimentFlag, channelNo{channel2register},[], [], storeInExpObject);
+        experimentStructure =  createSummaryImages(experimentStructure,vol, saveRegMovie, experimentFlag, channelNo{indForOtherChannel},[], [], storeInExpObject);
     end
     
     createChannelOverlapImage(experimentStructure, vol,channelNo{indForOtherChannel}, 100);

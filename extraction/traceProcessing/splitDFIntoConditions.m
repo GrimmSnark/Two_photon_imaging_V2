@@ -13,7 +13,7 @@ function experimentStructure = splitDFIntoConditions(experimentStructure, limitB
 %% defaults
 
 if nargin < 2 || isempty(limitBlocks)
-    limitBlocks = eval('length(experimentStructure.cndTrials{x})');
+    limitBlocks = max(experimentStructure.block(:,2));
 end
 
 %% get trial length and stim on frame lengths
