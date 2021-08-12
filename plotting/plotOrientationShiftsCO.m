@@ -60,11 +60,11 @@ else
 end
 
 
-oriPeaksRad = circ_ang2rad(oriPeaks);
+oriPeaksRad = circ_ang2rad(oriPeaks * 2);
 
-LvM = circ_rad2ang(angdiff(oriPeaksRad(:,1), oriPeaksRad(:,2)));
-LvS = circ_rad2ang(angdiff(oriPeaksRad(:,1), oriPeaksRad(:,4)));
-MvS = circ_rad2ang(angdiff(oriPeaksRad(:,2), oriPeaksRad(:,4)));
+LvM = circ_rad2ang(angdiff(oriPeaksRad(:,1), oriPeaksRad(:,2)))/2;
+LvS = circ_rad2ang(angdiff(oriPeaksRad(:,1), oriPeaksRad(:,4)))/2;
+MvS = circ_rad2ang(angdiff(oriPeaksRad(:,2), oriPeaksRad(:,4)))/2;
 
 LvMRect = abs(LvM);
 LvSRect = abs(LvS);

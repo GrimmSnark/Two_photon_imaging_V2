@@ -346,6 +346,9 @@ for i =1:length(nonEssentialEventNumbers)
         catch
             % if all else fails then read the data from the PTB array
             
+            % checks whether event is used at all
+            if ~isempty(codes{nonEssentialEventNumbers(i)})
+            
             % check which trial stil need fixed
             % finds the trials that have non matching number of events
             for q = 1:size(indexOfBoth,3) % for each trial
@@ -377,8 +380,18 @@ for i =1:length(nonEssentialEventNumbers)
                 
                 if totalNoEvent == 1 && trialEventAverage == 1 % if missing only single event
                      PTB_currentTrialFirstEvent = find(PTB_currentTrial(:,2)==nonEssentialEventNumbers(i),1);
-                     ind2Match = strfind(currentTrial(:,2)', PTB_currentTrial(PTB_currentTrialFirstEvent+1:PTB_currentTrialFirstEvent+3,2)');
-                     
+%                      ind2Match = strfind(currentTrial(:,2)', PTB_currentTrial(PTB_currentTrialFirstEvent+1:PTB_currentTrialFirstEvent+3,2)');
+                   ind2Match = strfind(currentTrial(:,2)', PTB_currentTrial(PTB_currentTrialFirstEvent:PTB_currentTrialFirstEvent+2,2)');
+                   
+                   % if cannot find matching conditon, looks for closest
+                   % condition coded. 
+                   if isempty(ind2Match)
+                       [~, indexValues] = sort( abs(currentTrial(:,2)-PTB_currentTrial(PTB_currentTrialFirstEvent,2)));
+                      ind2Match=  indexValues(1);
+                      
+                      currentTrial(ind2Match,2) = nonEssentialEventNumbers(i);
+                   else
+                      
                      timeDiff = PTB_currentTrial(PTB_currentTrialFirstEvent+1,1)-  PTB_currentTrial(PTB_currentTrialFirstEvent,1);
                      
                      newEvent = [currentTrial(ind2Match,1)-timeDiff*1000 PTB_currentTrial(PTB_currentTrialFirstEvent,2)];
@@ -388,6 +401,7 @@ for i =1:length(nonEssentialEventNumbers)
                      else % if any other event
                          currentTrial =  [currentTrial(1:ind2Match-1,:); newEvent ; currentTrial(ind2Match:end,:)];
                      end
+                   end
                      
                      nonEssentialCodes(:,:,indexOfMismatchedTrials(ww)) = 0;
                      nonEssentialCodes(:,:,indexOfMismatchedTrials(ww)) = currentTrial(1:size(nonEssentialCodes,1),:);
@@ -414,7 +428,8 @@ for i =1:length(nonEssentialEventNumbers)
                     % rebuild current trial
                     currentTrial =  [currentTrial(1:currentTrialFirstEvent-1,:); PTBCurrentEvent ;currentTrial(currentTrialLastEvent+1:currentTrialLastIndex,:)];
                     nonEssentialCodes(:,:,indexOfMismatchedTrials(ww)) = 0;
-                    nonEssentialCodes(:,:,indexOfMismatchedTrials(ww)) = currentTrial(1:size(nonEssentialCodes,1),:);
+%                     nonEssentialCodes(:,:,indexOfMismatchedTrials(ww)) = currentTrial(1:size(nonEssentialCodes,1),:);
+                    nonEssentialCodes(1:length(currentTrial),:,indexOfMismatchedTrials(ww)) = currentTrial;
                     
                 end
 
@@ -424,6 +439,7 @@ for i =1:length(nonEssentialEventNumbers)
             end
             
             nonEssentialEvent{2,i}= reshape(nonEssentialCodes(indexOfBoth),[],2,size(nonEssentialCodes,3)); % if all goes well reshapes array
+            end
         end
     end
 end

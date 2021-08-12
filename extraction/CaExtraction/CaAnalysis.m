@@ -72,8 +72,8 @@ load([folders2Process.folder '\experimentStructure.mat']);
 experimentStructure.cellCount = ROInumber;
 ROIobjects = RC.getRoisAsArray;
 cellROIs = ROIobjects(1:ROInumber);
-neuropilROIs = ROIobjects(ROInumber+1:end);
-experimentStructure.labeledCellROI = createLabeledROIFromImageJPixels([experimentStructure.pixelsPerLine experimentStructure.pixelsPerLine], cellROIs);
+neuropilROIs = ROIobjects(ROInumber+1:end);experimentStructure.labeledCellROI = createLabeledROIFromImageJPixels([experimentStructure.pixelsPerLine experimentStructure.pixelsPerLine], cellROIs);
+
 experimentStructure.labeledNeuropilROI = createLabeledROIFromImageJPixels([experimentStructure.pixelsPerLine experimentStructure.pixelsPerLine], neuropilROIs);
 experimentStructure.averageROIRadius = averageROIRadius;
 

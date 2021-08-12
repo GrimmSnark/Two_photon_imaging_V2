@@ -1,14 +1,14 @@
 function PTB_DotMotion(angle)
 
-dots.dotDensity = 20;
-dots.speed = 5; % Speed of the dots (degrees/second)
+dots.dotDensity = 3;
+dots.speed = 20; % Speed of the dots (degrees/second)
 dots.direction = angle;
-dots.lifetime = 20;
+dots.lifetime = 10;
 dots.apertureSize = [];
 dots.center = [0,0];
 dots.color = [0,255,255];
-dots.size = 8;
-dots.coherence = 1;
+dots.size = 100;
+dots.coherence = 0;
 
  duration = []; %seconds
 try

@@ -42,8 +42,13 @@ if ~isobject(filepath)
         filePath2Use = dir(filepath);
         experimentStructure.savePath = [filePath2Use.folder '\'] ;
     catch
-        load([filepath '\experimentStructure.mat']);
-        experimentStructure.savePath = [filepath '\'];
+        if exist([filepath '\experimentStructure.mat'], 'file' )
+            load([filepath '\experimentStructure.mat']);
+            experimentStructure.savePath = [filepath '\'];
+        else
+            folder2Try = dir([filepath '\**\experimentStructure.mat']);
+            load([folder2Try.folder '\experimentStructure.mat']);
+        end        
     end
 else % if variable is the experimentStructure
     experimentStructure = filepath;
@@ -280,6 +285,8 @@ switch response
         return
 end
 
+RC.runCommand('Save', [experimentStructure.savePath 'RawLinePic\dendrites\dendriteROIs.zip']); % saves zip file
+
 %% Get the raw data
 
 vol = readMultipageTifFiles(experimentStructure.prairiePath);
@@ -390,6 +397,5 @@ save([experimentStructure.savePath 'RawLinePic\dendrites\dendriteStructure.mat']
 plotOrientationTuningDendrite(experimentStructure, dendriteStructure, [], noOrientations, angleMax,0,secondCndDimension,[],[],scndDimLabels);
 
 
-RC.runCommand('Save', [experimentStructure.savePath 'RawLinePic\dendrites\dendriteROIs.zip']); % saves zip file
 MIJ.closeAllWindows
 end

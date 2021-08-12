@@ -22,7 +22,7 @@ function plotOrientationTuningPerCell(filepath, cellNo, noOrientations, angleMax
 %          plotPrefCndTraces - 0/1 flag to plot preferred condition and
 %                              indivdual traces in subplot (1). If set to 0
 %                              only plots the condition averages.
-%                              default = 1
+%                              default = 0
 %
 %          useSTDorSEM - 0/1 flag for using STD (1) or SEM (2) for error
 %                        bars (OPTIONAL) default = 1 (STD error bars)
@@ -84,7 +84,7 @@ if nargin < 4 || isempty(angleMax)
 end
 
 if nargin < 5 || isempty(plotPrefCndTraces)
-    plotPrefCndTraces = 1;
+    plotPrefCndTraces = 0;
 end
 
 if nargin < 6 || isempty(secondCndDimension)

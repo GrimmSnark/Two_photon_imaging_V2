@@ -72,11 +72,56 @@ angles = angles(1:end-1);
 
 %% Do Z Score of cell responsivity
 
-maxStimData = cellfun(@max,cellfun(@mean,cellfun(@cell2mat,data, 'Un', 0), 'Un', 0));
-prestimMean = cellfun(@mean,cellfun(@mean,cellfun(@cell2mat,preStim, 'Un', 0), 'Un', 0));
-prestimSD =cellfun(@std,cellfun(@mean,cellfun(@cell2mat,preStim, 'Un', 0), 'Un', 0));
+% maxStimData = cellfun(@max,cellfun(@mean,cellfun(@cell2mat,data, 'Un', 0), 'Un', 0));
+% prestimMean = cellfun(@mean,cellfun(@mean,cellfun(@cell2mat,preStim, 'Un', 0), 'Un', 0));
+% prestimSD =cellfun(@std,cellfun(@mean,cellfun(@cell2mat,preStim, 'Un', 0), 'Un', 0));
+% 
+% experimentStructure.ZScore = (maxStimData' - prestimMean') ./prestimSD';
 
-experimentStructure.ZScore = (maxStimData' - prestimMean') ./prestimSD';
+maxStimData = cellfun(@max,cellfun(@mean,cellfun(@cell2mat,data, 'Un', 0), 'Un', 0));
+samplelength = experimentStructure.stimOnFrames(2)- experimentStructure.stimOnFrames(1);
+
+cndTrials=[];
+% unpack cndTrials
+for vv = 1: length(experimentStructure.cndTrials)
+   cndTrials = [cndTrials  experimentStructure.cndTrials{vv}];
+end
+
+maxTrialNo2Use = max(cndTrials);
+
+% new prestim
+for cellNo = 1:experimentStructure.cellCount
+for qq = 2:maxTrialNo2Use
+    % find appropriate cnd for previous trial
+    out = cellfun(@(x)find(x(1,:) == qq-1),experimentStructure.cndTrials,'un',0);
+    cnd2UsePrev = find(~cellfun(@isempty,out'));
+    % find rep number of that condition prevous trial
+    repNumberPrev = find(experimentStructure.cndTrials{cnd2UsePrev} == qq-1);
+    trial2UsePrev = experimentStructure.dFperCndFBS{cellNo}{cnd2UsePrev}(:,repNumberPrev);
+    indx2SamplePrev = samplelength- (experimentStructure.stimOnFrames(1)-2);
+    
+    % find appropriate cnd for current trial
+    out = cellfun(@(x)find(x(1,:) == qq),experimentStructure.cndTrials,'un',0);
+    cnd2Use = find(~cellfun(@isempty,out'));
+    % find rep number of that condition prevous trial
+    repNumber = find(experimentStructure.cndTrials{cnd2Use} == qq);
+    trial2Use = experimentStructure.dFperCndFBS{cellNo}{cnd2Use}(:,repNumber);
+    indx2Sample = experimentStructure.stimOnFrames(1)-3;
+    
+    preStimWrap(cellNo,qq-1,:) = [trial2UsePrev(end-indx2SamplePrev:end); trial2Use(1:indx2Sample)];
+    
+end
+end
+
+preStimMean = mean(preStimWrap,3);
+preStimSD = std(preStimMean,[],2);
+preStimMean2 = mean(preStimMean,2);
+
+zscores = (maxStimData' - preStimMean2) ./preStimSD;
+
+experimentStructure.ZScore = zscores;
+
+
 %% start OSI calculations
 % runs through each cell
 for i = 1:experimentStructure.cellCount

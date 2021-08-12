@@ -13,6 +13,7 @@ function displayStackOverlaysFIJI(folders,image2Use, ROI2Use, labelCol)
 %         ROIText - number to inidicate which ROIs to overlay
 %                   1 = Line ROIs (DEFAULT)
 %                   2 = dendrite oval ROIs
+%                   [] = no ROIs to show
 %
 %         labelCol - color of ROI number labels
 %                   1 = Black (DEFAULT)
@@ -22,11 +23,11 @@ function displayStackOverlaysFIJI(folders,image2Use, ROI2Use, labelCol)
 
 %% Defaults
 if nargin < 2 || isempty(image2Use)
-   image2Use =  'LCS';
+    image2Use =  'LCS';
 end
 
 if nargin < 3 || isempty(ROI2Use)
-   ROI2Use = 1; 
+    ROI2Use = 1;
 end
 
 if nargin < 4 || isempty(labelCol)
@@ -45,9 +46,12 @@ end
 switch ROI2Use
     
     case 1 % line ROIs
-        ROIText = 'LineROIs'; 
+        ROIText = 'LineROIs';
     case 2
-        ROIText = 'dendrites\dendriteROIs'; 
+        ROIText = 'dendrites\dendriteROIs';
+        
+    case []
+        ROIText = [];
 end
 
 %% Get and display data
@@ -60,7 +64,7 @@ RC = RM.getInstance();
 
 % open images
 for i = 1:noImages
-    imageName = dir([folders{i} '\*' image2Use '*']);
+    imageName = dir([folders{i} '**\*' image2Use '*']);
     eval(['imp' num2str(i) '= ij.IJ.openImage([imageName.folder ''\'' imageName.name]);']);
     eval(['processor' num2str(i) '= imp' num2str(i) '.getProcessor();']);
 end
@@ -75,35 +79,38 @@ end
 
 % display stack
 stackImagePlusObj = ij.ImagePlus('Pixel Orientation Stack.tif', pixelPrefStack);
-stackImagePlusObj.show; 
- 
+stackImagePlusObj.show;
 
-overlayPointer = ij.gui.Overlay;
-overlayPointer.drawLabels(1);
-%import ROIs
-for x = 1:noImages
-    RC.runCommand('Open', [folders{x} '\RawLinePic\' ROIText '.zip']); % opens ROI file
 
-    ROInumber = RC.getCount();
-    for q =1:ROInumber
-       pointerROI = RC.getRoi(q-1); % Select current cell
-       pointerROI.setPosition(x);
-       
-       overlayPointer.add(pointerROI, num2str(q));
-       
+if ~isempty(ROIText)
+    overlayPointer = ij.gui.Overlay;
+    overlayPointer.drawLabels(1);
+    %import ROIs
+    for x = 1:noImages
+        roiFilepath = dir([folders{x} '**\RawLinePic\' ROIText '.zip']);
+        RC.runCommand('Open', [roiFilepath.folder '\' roiFilepath.name]); % opens ROI file
+        
+        ROInumber = RC.getCount();
+        for q =1:ROInumber
+            pointerROI = RC.getRoi(q-1); % Select current cell
+            pointerROI.setPosition(x);
+            
+            overlayPointer.add(pointerROI, num2str(q));
+            
+        end
+        RC.runCommand('Delete'); % resets ROIs
     end
-    RC.runCommand('Delete'); % resets ROIs
-end
-
-
-% displays overlay
-stackImagePlusObj.setOverlay(overlayPointer)
-
-% sets labels to correct numbers
-if labelCol == 1
-    MIJ.run("Labels...", "color=black font=15 show use bold");
-else
-    MIJ.run("Labels...", "color=white font=15 show use bold");
+    
+    
+    % displays overlay
+    stackImagePlusObj.setOverlay(overlayPointer)
+    
+    % sets labels to correct numbers
+    if labelCol == 1
+        MIJ.run("Labels...", "color=black font=15 show use bold");
+    else
+        MIJ.run("Labels...", "color=white font=15 show use bold");
+    end
 end
 
 % set window size and make the image easier to view

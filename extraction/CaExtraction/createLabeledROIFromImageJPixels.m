@@ -1,4 +1,4 @@
-function labeledROI = createLabeledROIFromImageJPixels(imgSize,roiObjects)
+function [labeledROI, centerXY] = createLabeledROIFromImageJPixels(imgSize,roiObjects)
 % Creates a labeled ROI from the ROIs defined in ImageJ's ROI Manager.
 %
 % Example: labeledROI = createLabeledROIFromImageJPixels([512 512],RC.getRoisAsArray)
@@ -42,5 +42,6 @@ for(i=1:nROIs)
     
     labeledROI = labeledROI(1:imgSize(1), 1:imgSize(2));
     
+    centerXY(i,:) = [X Y];
     %     imagesc(labeledROI);
 end
