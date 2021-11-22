@@ -55,7 +55,11 @@ if ~isempty(listEntry) % if you want to get data from a list
             % find the correct field to extract (The index for it changes
             % for each frame)
             for q = 1:length(eval([structStringList '{i}.' entry2Search]))
-                fieldNames{q} = eval([structStringList '{i}.' entry2Search '{q}.Attributes.key']);
+                try
+                    fieldNames{q} = eval([structStringList '{i}.' entry2Search '{q}.Attributes.key']);
+                catch
+                    fieldNames{q} = eval([structStringList '{i}.' entry2Search '.Attributes.key']);
+                end
             end
             
             ind2Use = find(cellfun(@(S) strcmp(field2Extract,S), fieldNames)); % find index of data to use
@@ -63,8 +67,13 @@ if ~isempty(listEntry) % if you want to get data from a list
             
             try
                 outputValue{i} = eval([structStringList '{i}.' entry2Search '{' num2str(ind2Use) '}.' suffixText ]);
+                
             catch
-                outputValue{i} = eval([structStringList '(i).' entry2Search '{' num2str(ind2Use) '}.' suffixText ]);
+                try
+                    outputValue{i} = eval([structStringList '{i}.' entry2Search '.' suffixText ]);
+                catch
+                    outputValue{i} = eval([structStringList '(i).' entry2Search '{' num2str(ind2Use) '}.' suffixText ]);
+                end
             end
             
             if isNumeric % converts data to numbers

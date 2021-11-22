@@ -11,45 +11,62 @@ function preprocessImages4UNet(imagesDir)
 
 %% Defaults
 
-parentFolder = dir(imagesDir);
+parentFolder = returnParentFolder(imagesDir);
 
-maskDir = [parentFolder(1).folder '\masks'];
-saveDir =parentFolder(1).folder;
+maskDir = [imagesDir '\masks'];
+saveDir =[parentFolder '\amp\'];
 
 
 %% load in example image
-tiffList = dir([imagesDir '*tif']);
+tiffList = dir([imagesDir '\*tif']);
 exampleImage = read_Tiffs([tiffList(1).folder '\' tiffList(1).name]);
 
 %% creates ROI masks
 % create image ROI masks
-intializeMIJ;
-RM = ij.plugin.frame.RoiManager();
-RC = RM.getInstance();
-
-roiFiles = dir([imagesDir '\*.zip']);
-
-for i = 1:length(roiFiles)
-    RC.runCommand('Open', [roiFiles(i).folder '\' roiFiles(i).name]); % opens zip file
-    ROIobjects = RC.getRoisAsArray;
-    labeledROI(:,:,i) = createLabeledROIFromImageJPixels([size(exampleImage)] ,ROIobjects);
-    RC.runCommand('Delete'); % resets ROIs if you select clear all
-end
-
-% binarize to 8bit
-labeledROI(labeledROI>0) = 255;
-
-% save masks to then use as datastore
-options.overwrite = true;
-for x = 1:size(labeledROI, 3)
-    saveastiff(labeledROI(:,:,x), [imagesDir '\Mask_' sprintf( '%03d' ,x) '.tif' ], options);
-end
-
+% intializeMIJ;
+% RM = ij.plugin.frame.RoiManager();
+% RC = RM.getInstance();
+% 
+% roiFiles = dir([imagesDir '\*.zip']);
+% 
+% for i = 1:length(roiFiles)
+%     RC.runCommand('Open', [roiFiles(i).folder '\' roiFiles(i).name]); % opens zip file
+%     MIJ.createImage(exampleImage);
+%     ROIobjects = RC.getRoisAsArray;
+%     numROIs = length(ROIobjects);
+%     
+%      % erode ROIs to stop overlap
+%     for x = 1:length(ROIobjects)
+%     RC.select(x-1); % Select current cell
+%     MIJ.run("Enlarge...", "enlarge=-1");
+%     RC.runCommand('Add');
+%     end
+%     
+%     ROIobjects = RC.getRoisAsArray;
+%     ROIobjects = ROIobjects(numROIs+1:end);
+%     
+%     labeledROI(:,:,i) = createLabeledROIFromImageJPixels([size(exampleImage)] ,ROIobjects);
+%     RC.runCommand('Delete'); % deletes selected ROI
+%     RC.runCommand('Delete'); % deletes all ROIs
+%     MIJ.run('Close');
+%     
+% end
+% 
+% % binarize to 8bit
+% labeledROI(labeledROI>0) = 255;
+% labeledROI = uint8(labeledROI);
+% 
+% % save masks to then use as datastore
+% options.overwrite = true;
+% for x = 1:size(labeledROI, 3)
+%     saveastiff(labeledROI(:,:,x), [maskDir '\Mask_' sprintf( '%03d' ,x) '.tif' ], options);
+% end
+% 
 %% manipulate data
 
 % load data back it
-images = readMultipageTifFiles(imagesDir);
-masks = readMultipageTifFiles(maskDir, 'uint8');
+images = readMultipageTifFiles([imagesDir '\']);
+masks = readMultipageTifFiles([maskDir '\']);
 
 imagesExpanded = images;
 masksExpanded = masks;
@@ -82,12 +99,15 @@ masksExpanded = cat(3,masksExpanded,masksFlip1, masksFlip2);
 normImages = uint16(round(mat2gray(imagesExpanded) * 65535));
 
 % saturate image to make neural net prediction better
-adjustedImages = imadjust(imagesExpanded);
+for q = 1:size(imagesExpanded,3)
+    adjustedImages(:,:,q) = imadjust(imagesExpanded(:,:,q));
+end
 
 % collate all the images
 imagesExpanded = cat(3,imagesExpanded,normImages, adjustedImages);
 masksExpanded = cat(3, masksExpanded, masksExpanded, masksExpanded);
 
+masksExpanded = uint8(masksExpanded);
 
 % save Images
 for x = 1:size(imagesExpanded,3)

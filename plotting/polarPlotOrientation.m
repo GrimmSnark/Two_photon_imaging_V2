@@ -1,4 +1,4 @@
-function polarPlotOrientation(filepath, cellNo, noOrientations, angleMax, secondCndDimension, colors)
+function polarPlotOrientation(filepath, cellNo, noOrientations, angleMax, secondCndDimension, data2Plot, colors)
 % Creates and saves polar plots for orientation experiments, can process
 % both orientation and combined orientation and color/SF experiments
 %
@@ -62,9 +62,14 @@ if nargin < 5 || isempty(secondCndDimension)
     colors = 'k';
 end
 
+if nargin < 6 || isempty(data2Plot)
+    data2Plot = 1;
+end
+
+
 
 % set colors for plotting
-if nargin < 6 || isempty(colors)
+if nargin < 7 || isempty(colors)
     % colors for monkey orientation colors
     colors = [1 0 0; 0 0.5 0; 1 0.5 0; 0 0 0.5];
 end
@@ -83,30 +88,61 @@ polarAngles = deg2rad(linspace(0, angleMax, noOrientations +1));
 % for the cells listed
 for x = cellNo
     
-    % if there are multiple repeats of orientations, ie for every color
-    if secondCndDimension> 1
-        for i = 1:size(meanDataRearranged{1,x},2)
-            polarplot(polarAngles, [meanDataRearranged{1,x}(:,i) ; meanDataRearranged{1,x}(1,i)], 'color', colors(i,:), 'LineWidth', 2);
-            hold on
-        end
-    else
-        polarplot(polarAngles, [meanDataRearranged{1,x} ; meanDataRearranged{1,x}(1)], 'color', colors, 'LineWidth', 2);
+    switch data2Plot
+        case 1
+            % if there are multiple repeats of orientations, ie for every color
+            if secondCndDimension> 1
+                for i = 1:size(meanDataRearranged{1,x},2)
+                    polarplot(polarAngles, [meanDataRearranged{1,x}(:,i) ; meanDataRearranged{1,x}(1,i)], 'color', colors(i,:), 'LineWidth', 2);
+                    hold on
+                end
+            else
+                polarplot(polarAngles, [meanDataRearranged{1,x} ; meanDataRearranged{1,x}(1)], 'color', colors, 'LineWidth', 2);
+            end
+            
+            % format the plot properly
+            polarPl = gca;
+            polarPl.ThetaZeroLocation = 'bottom';
+            polarPl.ThetaDir = 'clockwise';
+            thetalim([0 angleMax]);
+            
+            if ~exist([experimentStructure.savePath 'polarPlots\'], 'dir')
+                mkdir([experimentStructure.savePath 'polarPlots\']);
+            end
+            
+            % saves
+            saveas(gcf, [experimentStructure.savePath 'polarPlots\Polar Plot Cell ' num2str(x) '.tif']);
+            saveas(gcf, [experimentStructure.savePath 'polarPlots\Polar Plot Cell ' num2str(x) '.svg']);
+            close;
+            
+            
+        case 2
+            ang2plot = deg2rad(1:1:angleMax);
+            % if there are multiple repeats of orientations, ie for every color
+            if secondCndDimension> 1
+                for i = 1:secondCndDimension
+                    polarplot(ang2plot,experimentStructure.OSIStruct{x, i }.LSStruct.modelTrace  , 'color', colors(i,:), 'LineWidth', 2);
+                    hold on
+                end
+            else
+                polarplot(polarAngles, [meanDataRearranged{1,x} ; meanDataRearranged{1,x}(1)], 'color', colors, 'LineWidth', 2);
+            end
+            
+            % format the plot properly
+            polarPl = gca;
+            polarPl.ThetaZeroLocation = 'bottom';
+            polarPl.ThetaDir = 'clockwise';
+            thetalim([0 angleMax]);
+            
+            if ~exist([experimentStructure.savePath 'polarPlots\'], 'dir')
+                mkdir([experimentStructure.savePath 'polarPlots\']);
+            end
+            
+            % saves
+            saveas(gcf, [experimentStructure.savePath 'polarPlots\Polar Plot Fits Cell ' num2str(x) '.tif']);
+            saveas(gcf, [experimentStructure.savePath 'polarPlots\Polar Plot Fits Cell ' num2str(x) '.svg']);
+            close;
     end
-    
-    % format the plot properly
-    polarPl = gca;
-    polarPl.ThetaZeroLocation = 'bottom';
-    polarPl.ThetaDir = 'clockwise';
-    thetalim([0 angleMax]);
-    
-    if ~exist([experimentStructure.savePath 'polarPlots\'], 'dir')
-        mkdir([experimentStructure.savePath 'polarPlots\']);
-    end
-    
-    % saves
-    saveas(gcf, [experimentStructure.savePath 'polarPlots\Polar Plot Cell ' num2str(x) '.tif']);
-    saveas(gcf, [experimentStructure.savePath 'polarPlots\Polar Plot Cell ' num2str(x) '.svg']);
-    close;
 end
 
 

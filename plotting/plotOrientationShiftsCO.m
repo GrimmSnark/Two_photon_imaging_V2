@@ -44,15 +44,18 @@ end
 
 % limit to those with zscore
 if ~isempty(thresholdZ)
-    zscoreSubfield = experimentStructure.ZScore(experimentStructure.subfieldPatchFlag ==1);
+%     zscoreSubfield = experimentStructure.ZScore(experimentStructure.subfieldPatchFlag ==1);
+    zscoreSubfield = experimentStructure.ZScore;
     subFieldZscore = zscoreSubfield > thresholdZ;
 
-    oriPeaks = oriPeaks(experimentStructure.subfieldPatchFlag ==1,:);
+%     oriPeaks = oriPeaks(experimentStructure.subfieldPatchFlag ==1,:);
+    oriPeaks = oriPeaks;
     oriPeaks = oriPeaks(subFieldZscore,:);
     
     zScoreThresholded = zscoreSubfield(subFieldZscore);
     
-    guasCurves = guasCurves(experimentStructure.subfieldPatchFlag ==1,:,:);
+%     guasCurves = guasCurves(experimentStructure.subfieldPatchFlag ==1,:,:);
+     guasCurves = guasCurves;
     guasCurves = guasCurves(subFieldZscore,:,:);
   
 else
@@ -116,10 +119,13 @@ MvSRect = abs(MvS);
 
 %% get angle shifts > 15  && > 30 for CO Patch and Interpatch
 
-COSubField = experimentStructure.COIdent(experimentStructure.subfieldPatchFlag == 1);
+% COSubField = experimentStructure.COIdent(experimentStructure.subfieldPatchFlag == 1);
+COSubField = experimentStructure.COIdent;
 COSubField = COSubField(subFieldZscore);
 
-cellsSubfield = find(experimentStructure.subfieldPatchFlag == 1);
+% cellsSubfield = find(experimentStructure.subfieldPatchFlag == 1);
+cellsSubfield = 1:experimentStructure.cellCount;
+
 cellsSubfieldZscored = cellsSubfield(subFieldZscore);
 cellsSubFieldPatch = cellsSubfieldZscored(COSubField == 1);
 cellsSubFieldInterPatch = cellsSubfieldZscored(COSubField == 0);
@@ -188,41 +194,42 @@ angularShiftsSubField.MSInterPatch =MSInterPatch;
 experimentStructure.angularShiftsSubField = angularShiftsSubField;
 
 
-% figHandle = figure('units','normalized','outerposition',[0 0 0.5 1]);
-% 
-% ax(1) = subplot(321);
-% histogram(ax(1), LMPatch, 100);
-% title('L Cone vs M Cone Patch');
-% 
-% ax(2) = subplot(322);
-% histogram(ax(2), LMInterPatch, 100);
-% title('L Cone vs M Cone Inter Patch');
-% 
-% ax(3) = subplot(323);
-% histogram(ax(3), LSPatch, 100);
-% title('L Cone vs S Cone Patch');
-% 
-% ax(4) = subplot(324);
-% histogram(ax(4), LSInterPatch, 100);
-% title('L Cone vs S Cone Inter Patch');
-% 
-% ax(5) = subplot(325);
-% histogram(ax(5), MSPatch, 100);
-% title('M Cone vs S Cone Patch');
-% xlabel('Angular Shift');
-% 
-% 
-% ax(6) = subplot(326);
-% histogram(ax(6), MSInterPatch, 100);
-% title('M Cone vs S Cone Inter Patch');
-% 
-% xlabel('Angular Shift');
-% 
-% subplotEvenAxes(gcf);
-% tightfig
-% 
-% saveas(gcf, [experimentStructure.savePath  'Hist Angular Shift CO Subfield.tif']);
+figHandle = figure('units','normalized','outerposition',[0 0 0.5 1]);
 
+ax(1) = subplot(321);
+histogram(ax(1), LMPatch, 100 , 'FaceColor', 'k', 'FaceAlpha',1);
+title('L Cone vs M Cone Patch');
+
+ax(2) = subplot(322);
+histogram(ax(2), LMInterPatch, 100, 'FaceColor', 'k', 'FaceAlpha',1);
+title('L Cone vs M Cone Inter Patch');
+
+ax(3) = subplot(323);
+histogram(ax(3), LSPatch, 100, 'FaceColor', 'k', 'FaceAlpha',1);
+title('L Cone vs S Cone Patch');
+
+ax(4) = subplot(324);
+histogram(ax(4), LSInterPatch, 100, 'FaceColor', 'k', 'FaceAlpha',1);
+title('L Cone vs S Cone Inter Patch');
+
+ax(5) = subplot(325);
+histogram(ax(5), MSPatch, 100, 'FaceColor', 'k', 'FaceAlpha',1);
+title('M Cone vs S Cone Patch');
+xlabel('Angular Shift');
+
+
+ax(6) = subplot(326);
+histogram(ax(6), MSInterPatch, 100, 'FaceColor', 'k', 'FaceAlpha',1);
+title('M Cone vs S Cone Inter Patch');
+
+xlabel('Angular Shift');
+
+subplotEvenAxes(gcf);
+vline2(ax,30);
+tightfig
+
+saveas(gcf, [experimentStructure.savePath  'Hist Angular Shift CO Subfield.tif']);
+saveas(gcf, [experimentStructure.savePath  'Hist Angular Shift CO Subfield.svg']);
 %% scatter
 % 
 % figHandle = figure('units','normalized','outerposition',[0 0 0.5 1]);

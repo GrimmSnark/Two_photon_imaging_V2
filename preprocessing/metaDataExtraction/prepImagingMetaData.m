@@ -16,8 +16,14 @@ if isempty(fileList)
     fileList = dir([filepath '*.xml']); % trys to add last backslash if can not find files
     
     if isempty(fileList)
+        try
+            fileList = dir([filepath '**\*.xml']); % trys to look in any subfolder
+            experimentStructure.prairiePath  = [fileList(1).folder '\'];
+        catch
         error(['Please check filepath:' ...
             '\n%s'], filepath);
+        
+        end
     end
 end
 

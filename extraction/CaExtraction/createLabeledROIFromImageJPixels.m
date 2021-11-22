@@ -13,8 +13,9 @@ for(i=1:nROIs)
     Y = round(roiObjects(i).getYBase+1);
     
     % Get local mask for ROI object
+    try
     localCellMask = roiObjects(i).getMask();
-    height = localCellMask.getHeight();
+        height = localCellMask.getHeight();
     width  = localCellMask.getWidth();
     boundedPixels = double(localCellMask.getPixels());
     localCellImg = reshape(boundedPixels,[width,height]);
@@ -43,5 +44,8 @@ for(i=1:nROIs)
     labeledROI = labeledROI(1:imgSize(1), 1:imgSize(2));
     
     centerXY(i,:) = [X Y];
+    catch
+        
+    end
     %     imagesc(labeledROI);
 end

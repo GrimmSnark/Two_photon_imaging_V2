@@ -13,7 +13,7 @@ function copyDataForNeuralNetTraining(folderPaths, saveDir, removeRecordingFlag)
 %% set defaults
 
 if nargin < 2 || isempty(saveDir)
-    saveDir = 'D:\Data\2P_Data\Processed\Mouse\neuralNetData\neuralNetCovid19\';
+    saveDir = 'D:\Data\2P_Data\Processed\Mouse\neuralNetData\Cyprus\';
 end
 
 if nargin < 3 || isempty(removeRecordingFlag)
@@ -63,29 +63,32 @@ end
 copyfiles{1} = 'ROIcells.zip';
 copyfiles{2} = 'STD_Average.tif';
 
-if ~exist(saveDir,7)
+if ~exist(saveDir,'dir')
    mkdir(saveDir); 
 end
 
-if ~exist([saveDir '\original'],7)
+if ~exist([saveDir '\original'],'dir')
    mkdir([saveDir '\original']); 
 end
-
-original
 
 count = 1;
 for i = 1:length(folders)
     for x = 1:length(copyfiles)
             if x == 1 %if the ROI file
-                copyfile([folders(i).folder '\' copyfiles{x}], [saveDir '\original' copyfiles{x}(1:end-4) '_' sprintf('%02d',i) copyfiles{x}(end-3:end) ])
+                copyfile([folders(i).folder '\' copyfiles{x}], [saveDir '\original\' copyfiles{x}(1:end-4) '_' sprintf('%02d',i) copyfiles{x}(end-3:end) ])
             else % if the image file
                 try
                     image2Process = read_Tiffs([folders(i).folder '\Max_Project.tif']); % This is the image we want if it a two channel recording
                 catch
+                    try
                     image2Process = read_Tiffs([folders(i).folder '\' copyfiles{x}]); % If a single channel recoring
+                    catch
+                      image2Process = read_Tiffs([folders(i).folder '\' copyfiles{x}(1:end-4) '_Ch2.tif' ]); % If a single channel recoring  
+                    end
+                    
                 end
                 
-                saveastiff(image2Process, [saveDir '\original\' copyfiles{x}(1:end-4) '_' sprintf('%02d',i) copyfiles{x}(end-3:end) ])
+                saveastiff(image2Process, [saveDir '\original\' copyfiles{x}(1:end-4) '_' sprintf('%02d',i) copyfiles{x}(end-3:end) ]);
             end
             count = count +1; 
     end 

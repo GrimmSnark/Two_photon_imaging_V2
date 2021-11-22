@@ -11,7 +11,7 @@ switch ROIType
         offsetVal = 3;
     case 2 % dendrite ROIs
         roiPath = dir([parentDir '\**\dendriteROIs.zip']);
-        fontSize = 20;
+        fontSize = 15;
         offsetVal = 10;
 end
 

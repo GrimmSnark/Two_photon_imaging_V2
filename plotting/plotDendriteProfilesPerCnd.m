@@ -103,6 +103,10 @@ else
     magSize = 200; % magnification for image viewing in %
 end
 
+if ~exist([experimentStructure.savePath 'RawLinePic\dendrites\'], 'dir')
+    mkdir([experimentStructure.savePath 'RawLinePic\dendrites\']);
+end
+
 if ~exist([experimentStructure.savePath 'RawLinePic\dendrites\dendriteStructure.mat'], 'file')
     dendriteStructure = dendriteStructureClass;
 else
@@ -387,9 +391,6 @@ for i = 1:length(dendriteStructure.rawFperCnd) % for each cell
 end
 
 %% Save the updated experimentStructure
-if ~exist([experimentStructure.savePath 'RawLinePic\dendrites\'], 'dir')
-    mkdir([experimentStructure.savePath 'RawLinePic\dendrites\']);
-end
 save([experimentStructure.savePath 'RawLinePic\dendrites\dendriteStructure.mat'], 'dendriteStructure');
 
 %% plotting

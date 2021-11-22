@@ -18,6 +18,12 @@ intializeMIJ;
 % get imaging meta data and trial data
 % start image processing
 
+% do some filepath checks
+if ~contains(directory, 'ZSeries')
+    directory = dir([directory '\ZSeries*']);
+    directory = [directory.folder '\' directory.name];
+end
+
 experimentStructure.prairiePath = [directory '\']; % sets folder path for raw data
 
 % reads in imaging data
@@ -53,6 +59,8 @@ if length(channelNo)>1
         for z = 1:length(experimentStructure.positionsPerFrame)
             impFIJI.getStack().setSliceLabel(['Z: ' num2str(experimentStructure.positionsPerFrame(z,3)) 'um'] , z);
         end
+        
+        impFIJI.draw;
         
         % saves stack
         ij.io.FileSaver(impFIJI).saveAsTiffStack([savePath 'ZStack' channelNo{q} '.tif']);

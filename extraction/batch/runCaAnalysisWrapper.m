@@ -18,8 +18,8 @@ function runCaAnalysisWrapper(experimentDayFilepath, chooseROIsFlag, startDirNo,
 %                              overlapping or not, ie whether it show
 %                              co-expression. Only affects recordings with
 %                              two color channels
-%                               0 == do not categorize
-%                               1 == categorize (DEFAULT)
+%                               0 == do not categorize (DEFAULT)
+%                               1 == categorize 
 %         useNeuralNet4ROIs: Inidicates whether you want to use the neural
 %                            net to prime ROIs for cells
 %                               0 == do not use net
@@ -42,7 +42,7 @@ if nargin <4 || isempty(channel2Use)
 end
 
 if nargin <5 || isempty(checkChannelOverlap)
-    checkChannelOverlap = 1;
+    checkChannelOverlap = 0;
 end
 
 if nargin <6 || isempty(useNeuralNet4ROIs)

@@ -1,6 +1,6 @@
-function plotConeInputRatioMaps(filepath, thresholdZ)
+function plotConeResponseRatioMaps(filepath, thresholdZ, LMMod, S_LM_Mod)
 % Plots and saves RGB image of index preference for L vs M and S vs LM
-% ratios
+% response ratios (not cone contrast corrected
 % Input:    experimentStructure
 %           mapType- string variable of the index to use, ie 'OSI',
 %           'ratioLM', 'ratioLMS'
@@ -36,14 +36,14 @@ end
 cellROIs = experimentStructure.labeledCellROI;
 
 % sets up blank images
-cellMap = ones(experimentStructure.pixelsPerLine) *-1;
+cellMap = nan(experimentStructure.pixelsPerLine);
 
 zScore = experimentStructure.ZScore;
 
 % LM map
 % map zscores to blank image, if under threshold set to NaN
 
-LMVaues = experimentStructure.ConeInputRatioLM;
+LMVaues = LMMod;
 for cellNo = 1:length(zScore)
     
     if zScore(cellNo) > thresholdZ
@@ -59,9 +59,9 @@ cellMapLM = cellMap;
 % map zscores to blank image, if under threshold set to NaN
 
 % sets up blank images
-cellMap = ones(experimentStructure.pixelsPerLine) *-1;
+cellMap = nan(experimentStructure.pixelsPerLine);
 
-S_LMVaues = experimentStructure.ConeInputRatioS_LM;
+S_LMVaues =S_LM_Mod;
 for cellNo = 1:length(zScore)
     
     if zScore(cellNo) > thresholdZ
@@ -102,8 +102,9 @@ end
 %% create map
 
 % LM map
-cellMapLMRescale = round(cellMapLM*256);
-cellMapLMRescale(cellMapLMRescale ==0) = 2;
+cellMapLMRescale = rescale2Range(cellMapLM, [-1 1]);
+cellMapLMRescale = round(cellMapLMRescale*256);
+% cellMapLMRescale(cellMapLMRescale ==0) = 2;
 % cellMapLM_RGB = ind2rgb(cellMapLMRescale, [LvMLog_colMap ;0.5 0.5 0.5]);
 cellMapLM_RGB = ind2rgb(cellMapLMRescale, [LvM_colMap ; 1 1 1]);
 
@@ -123,9 +124,9 @@ set(gca,'xtick',[]);
 set(gca,'ytick',[])
 colorBar.TickLabels = [linspace(-1,1, 11)];
 
-% saveas(figMap, [experimentStructure.savePath 'Cone Input Map LM_2.tif']);
-% saveas(figMap, [experimentStructure.savePath 'Cone Input Map LM_2.svg']);
-% imwrite(cellMapLM_RGB, [experimentStructure.savePath 'Cone Input Map LM_native_2.tif']);
+saveas(figMap, [experimentStructure.savePath 'Cone Response Ratio Map LM.tif']);
+saveas(figMap, [experimentStructure.savePath 'Cone Response Ratio Map LM.svg']);
+imwrite(cellMapLM_RGB, [experimentStructure.savePath 'Cone Response Ratio Map LM_native.tif']);
 
 % saveas(figMap, [experimentStructure.savePath 'Cone Input Map Log LM.tif']);
 % imwrite(cellMapLM_RGB, [experimentStructure.savePath 'Cone Input Map Log LM_native.tif']);
@@ -136,8 +137,9 @@ close();
 
 
 % S/LM map
-cellMapS_LMRescale = round(cellMapS_LM*256);
-cellMapS_LMRescale(cellMapS_LMRescale ==0) = 2;
+cellMapLMRescale = rescale2Range(cellMapS_LM, [-1 1]);
+cellMapS_LMRescale = round(cellMapLMRescale*256);
+% cellMapS_LMRescale(cellMapS_LMRescale ==0) = 2;
 
 % cellMapS_LM_RGB = ind2rgb(cellMapS_LMRescale, [SvLMlog_colMap ;0.5 0.5 0.5]);
 cellMapS_LM_RGB = ind2rgb(cellMapS_LMRescale, [SvLM_colMap ;1 1 1]);
@@ -162,9 +164,9 @@ colorBar.TickLabels = [linspace(-1,1, 11)];
 % saveas(figMap, [experimentStructure.savePath 'Cone Input Map Log S_LM.tif']);
 % imwrite(cellMapS_LM_RGB, [experimentStructure.savePath 'Cone Input Map Log S_LM_native.tif']);
 
-saveas(figMap, [experimentStructure.savePath 'Cone Input Map S_LM_2.tif']);
-saveas(figMap, [experimentStructure.savePath 'Cone Input Map S_LM_2.svg']);
-imwrite(cellMapS_LM_RGB, [experimentStructure.savePath 'Cone Input Map S_LM_native_2.tif']);
+saveas(figMap, [experimentStructure.savePath 'Cone Response Ratio Map S_LM.tif']);
+saveas(figMap, [experimentStructure.savePath 'Cone Response Ratio Map S_LM.svg']);
+imwrite(cellMapS_LM_RGB, [experimentStructure.savePath 'Cone Response Ratio S_LM_native.tif']);
 
 close();
 
