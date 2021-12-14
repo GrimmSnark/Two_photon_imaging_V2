@@ -33,25 +33,31 @@ function movingDots(display,dots,duration)
 %    resolution      pixel resolution, set by 'OpenWindow'
 
 % 3/23/09 Written by G.M. Boynton at the University of Washington
-% 5/11/21 Modifed by M.A. Savage 
+% 5/11/21 Modifed by M.A. Savage
 
 
 if nargin > 3 || isempty(duration)
-   duration = Inf; 
+    duration = Inf;
 end
 
 % If aperturesize is empty, assume fullfield
-if isempty(dots.apertureSize)
-   dots.apertureSize = [pixels2DegreeVisualAngle(display.displaySetup,display.resolution(1)) *1.1, ...
-                        pixels2DegreeVisualAngle(display.displaySetup,display.resolution(1)) *1.1] ;
+if isempty(dots(1).apertureSize)
+    for x = 1:length(dots)
+        dots(x).apertureSize = [pixels2DegreeVisualAngle(display.displaySetup,display.resolution(1)) *1.1, ...
+            pixels2DegreeVisualAngle(display.displaySetup,display.resolution(1)) *1.1] ;
+    end
 end
 
 
 if ~isfield(dots,'nDots') || isfield(dots, 'dotDensity')
-    dots.nDots = round( dots.dotDensity * dots.apertureSize(1));
+    for x = 1:length(dots)
+        dots(x).nDots = round( dots(x).dotDensity * dots(x).apertureSize(1));
+    end
 end
 
-dots.direction = mod(dots.direction-90, 360); % setd the angle to match up with other pyschtoolbox angles
+for x = 1:length(dots)
+    dots(x).direction = mod(dots(x).direction-90, 360); % setd the angle to match up with other pyschtoolbox angles
+end
 
 %Calculate total number of dots across fields
 nDots = sum([dots.nDots]);
