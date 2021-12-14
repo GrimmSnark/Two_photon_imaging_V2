@@ -1,5 +1,19 @@
 function pairwiseNoiseCorrelations(experimentStructure, cnd2Use, plotFlag)
+% runs noise correlations (i.e prestimulus time period) on all cells in
+% indivdual recording, called by pairwiseNoiseCorrelationsWrapper. Saves
+% experimentStructure with correlation values
+%
+% Inputs:   experimentStructure - structure containng all the data for that
+%                                 run
+%
+%           cnd2Use - vector of condition numbers to use, 1:8, 33:40 etc
+%                     only really used if you are doing
+%                     orientation/contrast data etc
+%
+%           plotFlag - flag to actually create plot instead of just
+%                      calculating values, DEFAULT = 0
 
+%%
 if nargin <3 || isempty(plotFlag)
    plotFlag = 0; 
 end

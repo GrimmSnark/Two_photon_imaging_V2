@@ -1,6 +1,5 @@
 function compareOrientationTuningFitsLS(experimentStructureOrFilepath, cellNo, noOrientations, secondCndDimension, angleMax)
-% Plots different orientation tuning curve fits to compare different
-% methods
+% Plots different orientation tuning curve fits to monkey data with LS fits
 %
 % Inputs:  experimentStructureOrFilepath - processed data folder containing
 %                                          the experimentStructure.mat, or 

@@ -1,4 +1,13 @@
 function plotOrientationShifts(filepath, thresholdZ)
+% Plots preferred orientation shifts across the different cone conditions
+% for monkey data
+%
+% Inputs:  filepath - processed data folder containing the
+%                     experimentStructure.mat, or the fullfile to the
+%                     experimentStructure.mat OR the structure itself
+%
+%          thresholdZ - zscore threshold for responsivity, DEFAULT = no
+%                       limit
 
 %% set defaults
 

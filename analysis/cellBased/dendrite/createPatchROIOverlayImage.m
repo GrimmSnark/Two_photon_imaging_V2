@@ -1,4 +1,16 @@
 function [overlayImage] = createPatchROIOverlayImage(imagePath, ROIType)
+% creates flattened overlay image of ROIs on greyscale average or SD image
+% for checking dendrite ROI or cell ROI overlap
+%
+% Inputs: imagePath - fullfile to image to use for overlay
+%
+%         ROIType - ROI type to use for overlay
+%                       1 - cell ROI
+%                       2 - dendrite ROI
+%
+% Output: overlayImage - RGB overlay image 
+%
+% Called by checkDendriteCellOverlap
 
 %% load in ROIs/images
 

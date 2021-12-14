@@ -8,7 +8,9 @@ function checkDualChannelExpression(data, channel2Check)
 %
 %         channel2Check: Specify channel number to check for dual 
 %                        expression, ie 1 (red channel)/ 2(green channel)
-               
+%                        where the structural marker is
+%
+% NOT USED ANYMORE
 
 %% Defaults
 

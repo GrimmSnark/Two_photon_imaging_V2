@@ -1,17 +1,27 @@
 function plotCorrCoeffDistance(figHandle,corrStruct, data2Use) 
-
-
+% Plots correlation coeffs across distance for populations of data for both
+% non PV and PV cell types in mouse for stimulus or noise data types
+%
+% Inputs: figHandle - figure/axis handle to place plot into
+%
+%         corrStruct- structure containing all correlation metrics
+%                     for the popultion to plot
+%
+%         data2Use- 1/2 flag to choose whether to plot stimulus (1)
+%                   or noise (2) correlations
+%                   DEFAULT = 1 (stimulus correlations)
+%%
 if nargin < 3 || isempty(data2Use)
     data2Use = 1;
 end
 
 %% choose data
 switch data2Use 
-    case 1
+    case 1  % stimulus correlations
         pairDistance = corrStruct.pairDistance;
         corrMatrix = corrStruct.corrMatrix;
         pairwiseCellId = corrStruct.pairwiseCellId;
-    case 2
+    case 2 % noise correlations
         pairDistance = corrStruct.pairDistance_Noise;
         corrMatrix = corrStruct.corrNoiseMatrix_Noise;
         pairwiseCellId = corrStruct.pairwiseCellId_Noise;

@@ -7,6 +7,8 @@ function checkCellROICOContourOverlap(recordingDir, COImageFilepath)
 %         COImageFilepath - filepath to RGB image of CO patch borders which
 %                           are overlaid on 2P recording image size (512 x
 %                           512 pix)
+%
+% USAGE: checkCellROICOContourOverlap('D:\Data\2P_Data\Processed\Monkey\M10_Sully_BF797C\run_11_OIST\TSeries-04042019-0932-012\20200423154339\','D:\Data\2P_Data\Processed\Monkey\M10_Sully_BF797C\CO-contours.png')
 
 intializeMIJ;
 
@@ -77,7 +79,7 @@ end
 
 experimentStructure.COIdent = sum(COFlag,1)'; % reduces array to vector
 
- save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure', '-v7.3');
+save([experimentStructure.savePath 'experimentStructure.mat'], 'experimentStructure', '-v7.3');
 
 end
 

@@ -1,6 +1,8 @@
 function eventArray = readEventFilePrairieV2(dataFilepath, keyFilepath)
 % reads prairie event file and decodes analogue signal into discrete levels
 % of stimcode.
+% NB THIS VERSION IS NON FUNCTIONAL!!!!!!!
+%
 % Inputs-  dataFilepath: fullfile of voltage csv file
 %
 %          keyFilePath: voltage level key calculated in previous from

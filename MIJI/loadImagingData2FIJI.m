@@ -1,5 +1,11 @@
 function loadImagingData2FIJI(filepath2Use, registerFlag)
-
+% loads processed data into ImageJ and preforms motion correction if you
+% want
+%
+% Inputs: filepath2Use - folder for processed data to load
+%
+%         registerFlag - 0/1 to preform motion correction
+%                        DEFAULT = 1, do correction
 
 
 %% set defaults

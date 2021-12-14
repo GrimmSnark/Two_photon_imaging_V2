@@ -1,5 +1,9 @@
 function failedFiles = convertExperimentStructure2ClassObject(directory)
-
+% Converts all experimentStructures to matlab objects
+% Input: directory - folder path to search through
+%
+% Output: Cell string of files not able to convert
+%%
 failedFiles = [];
 %% Start processing
 

@@ -1,5 +1,15 @@
 function checkDendriteCellOverlap(fiepathCellList, image2Use)
-
+% Compares the dendrite ROIs between two overlaying dendrite runs and
+% doubles up the cell ROIs of the bottom layer to give three images
+%
+% Inputs: fiepathCellList - cell string of filepaths for the two recordings
+%                           to use
+%
+%         image2Use - string of image name to use for stack
+%                     DEFAULT = 'Max_Projection'
+%
+% USAGE: fiepathCellList = [{'D:\Data\2P_Data\Processed\Mouse\gCamp6s\AAVretro_LS_M4\20210715\run07\'}, {'D:\Data\2P_Data\Processed\Mouse\gCamp6s\AAVretro_LS_M4\20210715\run08'}];
+%        checkDendriteCellOverlap(fiepathCellList);
 %% defaults
 
 if nargin < 2 || isempty(image2Use)
@@ -15,9 +25,7 @@ catch
     
 end
 
-
 fiepathCellList{3} = fiepathCellList{2};
-
 %% create patch figures and taken snapshot
 
 roiIndicator = [ 2 2 1];
@@ -36,7 +44,4 @@ end
 images2Stack = permute(images2Stack, [1 2 4 3]);
 
 MIJ.createColor(images2Stack,1);
-%% set up figure with callback functions
-
-
 end

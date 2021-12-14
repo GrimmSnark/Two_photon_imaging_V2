@@ -1,7 +1,49 @@
 function [ratioLM, ratioLMS, ModInd_LM, ModInd_S_LM, coneWeights] = calculateConeInput(experimentStructure, noOrientations, secondCndDimension, zScoreThreshold)
-
-
+% calculates a variety of cone response ratios and weights for existing
+% monkey orientation/cone isolating stimuli with have L M L+M S conditions
+%
+% Inputs:   experimentStructure - structure containng all the data for that
+%                                 run
+%
+%          noOrientations - number of orientations tested in the experiment
+%                           default = 6
+%
+%          secondCndDimension - number of conditions in the second
+%                               dimension, e.g. colors tested, ie 1 for
+%                               black/white, 4 monkey color paradigm, or
+%                               number of spatial frequencies etc
+%                               default = 1
+%
+%          zScoreThreshold - zscore response threshold for inclusion in
+%                            analysis DEFAULT = no threshold
+%
+% Outputs:  ratioLM - ratio of L vs M input (max orientation responses)
+%
+%           ratioLMS - ratio of LM vs S input (max orientation responses)
+%
+%           ModInd_LM - modualtion index of L vs M (max orientation responses)
+%
+%           ModInd_LMS - modualtion index of LM vs S (max orientation responses)
+%
+%           coneWeights - structure containing normalized cone weights for
+%                         L, M, S from Johnson et al 2004 "Cone Inputs in
+%                         Macaque Primary Visual Cortex."
+%                   
+%                weight = LCD screen cone contrast corrected
+%                weightRel = LCD screen cone contrast corrected relative
+%                            weight
+%
+% USAGE:  [ratioLM, ratioLMS, ModInd_LM, ModInd_S_LM, coneWeights] = calculateConeInput(experimentStructure, 6, 4, []);
 %% defaults
+
+if nargin < 2 || isempty(noOrientations)
+    noOrientations = 6;
+end
+
+if nargin < 3 || isempty(secondCndDimension)
+    secondCndDimension = 4;
+end
+
 if nargin < 4 || isempty(zScoreThreshold)
     zScoreThreshold = [];
 end
@@ -38,6 +80,7 @@ for cellNo = 1:length(data)
     end
 end
 
+% calculate ratios and modulation indexes  for L vs M, LM vs S
 ratioLM = cndPrefPerColor(:,1) ./cndPrefPerColor(:,2);
 ratioLMS = cndPrefPerColor(:,3) ./ mean(cndPrefPerColor(:,1:2),2);
 

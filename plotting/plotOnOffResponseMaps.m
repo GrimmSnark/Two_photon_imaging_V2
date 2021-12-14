@@ -1,5 +1,20 @@
 function plotOnOffResponseMaps(filepath, thresholdZ, secondCndDimension)
-
+% Plots an image of the cells recorded as either ON, OFF, or both ON/OFF
+% responsive cells based on Z score threshold for either ON or OFF
+% timeperiods
+%
+% Inputs:  filepath - processed data folder containing the
+%                     experimentStructure.mat, or the fullfile to the
+%                     experimentStructure.mat OR the structure itself
+%
+%          thresholdZ - zscore threshold for responsivity, DEFAULT = no
+%                       limit
+%
+%          secondCndDimension - number of conditions in the second
+%                               dimension, e.g. colors tested, ie 1 for
+%                               black/white, 4 monkey color paradigm, or
+%                               number of spatial frequencies etc
+%                               default = 1
 %% set defaults
 
 % gets the experimentStructure

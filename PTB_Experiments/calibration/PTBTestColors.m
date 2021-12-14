@@ -1,6 +1,5 @@
 function PTBTestColors
-% Displays black & white screen for defined on & off times to see how the
-% screen stim and send events into Prairie sync up
+% Displays defined colors as fullscreen
 
 %% set up parameters of stimuli
 clc

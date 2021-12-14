@@ -5,6 +5,7 @@ function polarPlotOrientation(filepath, cellNo, noOrientations, angleMax, second
 % Inputs:  filepath - processed data folder containing the
 %                     experimentStructure.mat, or the fullfile to the
 %                     experimentStructure.mat OR the structure itself
+%
 %          cellNo- number or vector of numbers for cells to plot
 %
 %          noOrientations - number of orientations tested in the experiment

@@ -1,4 +1,31 @@
 function [fitGrandStruct] = testOrientationFitsPerBlock(experimentStructure, cellNos, noOrientations, angleMax, secondCndDimension)
+% Fits orientation tuning curves on each block of the orientation sets for
+% each cell specified for each cone coniditon (cone condition number hard
+% set for 4 colors
+%
+% Inputs:   experimentStructure - structure containng all the data for that
+%                                 run
+%
+%          cellNos- number or vector of numbers for cells to test
+%
+%          noOrientations - number of orientations tested in the experiment
+%                          ie 4/8 etc, default = 6
+%
+%          angleMax - 360 or 180 for the Max angle tested, default = 180
+%
+%          secondCndDimension - number of conditions in the second
+%                               dimension, e.g. colors tested, ie 1 for
+%                               black/white, 4 monkey color paradigm, or
+%                               number of spatial frequencies etc
+%                               default = 1
+%
+% Output: fitGrandStruct - Contains all the fits and metrics for all cells
+%                          for each block of orientation
+%                               cell no X color condition x block number
+%
+%           Fields - fitStruct - fit structure for each fit
+%                    peaks - peak angle location
+%                    width - tuning curve width
 
 %% set defaults
 if nargin < 3 || isempty(noOrientations)
@@ -43,7 +70,9 @@ for i = cellNos
         for q = 1: size(experimentStructure.dFstimWindowAverageFBS{i},1)
             data2Use = cell2mat(data{i}(q,condtionsBy2ndDim(c,:)));
             
-            x=interp1(data2Use,linspace(1,length(angles),18));
+            
+            x = interp1([ data2Use data2Use(1)],linspace(1,length(data2Use)+1,19)); % wrap around first condition and interp to number required + 1
+            x = x(1:18); % limit to 18 numbers, ie input for single guassian fit
             fitStruct = singleGaussianFit(x);
             
             fitGrandStruct.fitStruct(count,count2,q) =fitStruct;

@@ -34,6 +34,9 @@ function [OSIMetrics_animal, metricIdentifiers, XYZ_recordingLocs] = gatherOrien
 %
 %          XYZ_recordingLocs - XYZ locations of all recordings, used for
 %                              plotting across depths
+%
+% USAGE:  [OSIMetrics_animal, metricIdentifiers, XYZ_recordingLocs] = gatherOrientationMetrics('D:\Data\2P_Data\Processed\Monkey\M10_Sully_BF797C\run_11_OIST - Copy\', 2, [], 'COIdent');
+%
 %% set defaults
 if nargin <3 || isempty(zScoreLimit)
     zScoreLimit = [];

@@ -1,5 +1,13 @@
 function plotCorrelationPairResponses(experimentStructure, cellPairs)
+% Plots average condition responses, stimulus and noise correlations for
+% specficed pairs of cells ( used for mouse data)
+%
+% Inputs: experimentStructure - experimentStructure containing all the
+%                               information for the run
+%
+%         cellPairs - m x 2 number cell pair list to compare
 
+%% choose the right data for mouse
 if length(experimentStructure.cndTotal) > 8
     data2Use =cellfun(@(a) a(:, 33:40), experimentStructure.dFperCndMeanFBS, 'un', 0);
     errorBarData = cellfun(@(a) a(:,33:40), experimentStructure.dFperCndSTDFBS, 'un', 0);

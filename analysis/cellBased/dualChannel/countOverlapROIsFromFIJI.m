@@ -1,5 +1,9 @@
 function countOverlapROIsFromFIJI(experimentDayFilepath)
-
+% Counts number of cells which are indicated as being dual channel by their
+% ROI color
+%
+% NOT USED ANYMORE
+%%
 % initalize MIJI and get ROI manager open
 intializeMIJ;
 

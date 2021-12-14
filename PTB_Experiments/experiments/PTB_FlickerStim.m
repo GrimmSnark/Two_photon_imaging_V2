@@ -1,4 +1,14 @@
 function PTB_FlickerStim(stimTime, stimType, varargin)
+% runs a variety of screen flicker stimulus type, used for stimulating
+% while doing z stack series
+%
+% Inputs: stimTime - stimulus on time in seconds
+%         stimType - 1-3 stimulus type choice
+%               1 - fullfield color, defined by onColor
+%               2 - Single image flash (need to specify image2Use filepath)
+%               3 - Image set to flash (need to specify imageSet2Use
+%                   filepath and imageOrder)
+%         varargin - used for image2Use or imageSet2Use
 
 
 %% set up parameters of stimuli

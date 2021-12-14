@@ -1,11 +1,26 @@
-function pairwiseStimulusCorrelations(experimentStructure, cnd2Use)
+function pairwiseStimulusCorrelations(experimentStructure, cnd2Use, plotFlag)
+% runs stimulus correlations (i.e stimulus time period) on all cells in
+% indivdual recording, called by pairwiseStimulusCorrelationsWrapper. Saves
+% experimentStructure with correlation values
+%
+% Inputs:   experimentStructure - structure containng all the data for that
+%                                 run
+%
+%           cnd2Use - vector of condition numbers to use, 1:8, 33:40 etc
+%                     only really used if you are doing
+%                     orientation/contrast data etc
+%
+%           plotFlag - flag to actually create plot instead of just
+%                      calculating values, DEFAULT = 0
 
-
-
+%%
+if nargin <3 || isempty(plotFlag)
+   plotFlag = 0; 
+end
 
 % extract the data from expeimentStructure
 for i = 1:experimentStructure.cellCount
-responseMat(i,:,:) = cell2mat(experimentStructure.dFstimWindowAverageFBS{1,i});
+    responseMat(i,:,:) = cell2mat(experimentStructure.dFstimWindowAverageFBS{1,i});
 end
 
 responseMat = squeeze(mean(responseMat,2));
@@ -57,75 +72,77 @@ experimentStructure.correlations.pairDistance = pairDistance;
 experimentStructure.correlations.pairwiseCellId = pairwiseCellId;
 
 %% band the correlation coeffs by distance, cell type etc
-
-distanceBands = [0:50:450];
-
-for q = 1:length(distanceBands)-1
+if plotFlag == 1
+    distanceBands = [0:50:450];
     
-    pairs2Include = pairDistance > distanceBands(q) & pairDistance <= distanceBands(q+1);
-    coeffALLMean(q) = nanmean(corrMatrix(pairs2Include));
-    coeffAllSEM(q) =  std(corrMatrix(pairs2Include),'omitnan')/sqrt(length(corrMatrix(pairs2Include)));
+    for q = 1:length(distanceBands)-1
+        
+        pairs2Include = pairDistance > distanceBands(q) & pairDistance <= distanceBands(q+1);
+        coeffALLMean(q) = nanmean(corrMatrix(pairs2Include));
+        coeffAllSEM(q) =  std(corrMatrix(pairs2Include),'omitnan')/sqrt(length(corrMatrix(pairs2Include)));
+        
+    end
+    
+    
+    pairDistanceNonPV = pairDistance(pairwiseCellId == 0);
+    corrMatrixNonPV = corrMatrix(pairwiseCellId == 0);
+    for q = 1:length(distanceBands)-1
+        
+        pairs2Include = pairDistanceNonPV > distanceBands(q) & pairDistanceNonPV <= distanceBands(q+1);
+        coeffNonPVMean(q) = nanmean(corrMatrixNonPV(pairs2Include));
+        coeffNonPVSEM(q) =  std(corrMatrixNonPV(pairs2Include),'omitnan')/sqrt(length(corrMatrixNonPV(pairs2Include)));
+        
+    end
+    
+    pairDistanceNonPV_PV = pairDistance(pairwiseCellId == 1);
+    corrMatrixNonPV_PV = corrMatrix(pairwiseCellId == 1);
+    for q = 1:length(distanceBands)-1
+        
+        pairs2Include = pairDistanceNonPV_PV > distanceBands(q) & pairDistanceNonPV_PV <= distanceBands(q+1);
+        coeffNonPV_PVMean(q) = nanmean(corrMatrixNonPV_PV(pairs2Include));
+        coeffNonPV_PVSEM(q) =  std(corrMatrixNonPV_PV(pairs2Include),'omitnan')/sqrt(length(corrMatrixNonPV_PV(pairs2Include)));
+        
+    end
+    
+    pairDistancePV = pairDistance(pairwiseCellId == 2);
+    corrMatrixPV = corrMatrix(pairwiseCellId == 2);
+    for q = 1:length(distanceBands)-1
+        
+        pairs2Include = pairDistancePV > distanceBands(q) & pairDistancePV <= distanceBands(q+1);
+        coeffPVMean(q) = nanmean(corrMatrixPV(pairs2Include));
+        coeffPVSEM(q) =  std(corrMatrixPV(pairs2Include),'omitnan')/sqrt(length(corrMatrixPV(pairs2Include)));
+        
+    end
+    
+    
+    
+    %% plot
+    
+    figHandle= figure('units','normalized','outerposition',[0 0 1 1]);
+    title('Pairwise Neuron Correlations');
+    shadedErrorBarV2(50:50:450,coeffALLMean,coeffAllSEM, 'lineProps',  'k', 'DisplayName', 'All Pairs');
+    hold on
+    
+    shadedErrorBarV2(50:50:450,coeffNonPVMean,coeffNonPVSEM, 'lineProps',  'b',  'DisplayName', 'NonPV--NonPV');
+    
+    shadedErrorBarV2(50:50:450,coeffNonPV_PVMean,coeffNonPV_PVSEM, 'lineProps',  'g' , 'DisplayName', 'NonPV--PV');
+    
+    shadedErrorBarV2(50:50:450,coeffPVMean,coeffPVSEM, 'lineProps',  'r',  'DisplayName', 'PV--PV');
+    legend;
+    
+    xlim([0 450]);
+    xlabel('Pairwise Distance (um)');
+    ylabel('Pearson Correlation Coeff');
+    
+    tightfig;
+    
+    
+    %% save stuff
+    
+    saveas(figHandle, [experimentStructure.savePath 'Pairwise Correlations.tif']);
+    close;
     
 end
-
-
-pairDistanceNonPV = pairDistance(pairwiseCellId == 0);
-corrMatrixNonPV = corrMatrix(pairwiseCellId == 0);
-for q = 1:length(distanceBands)-1
-    
-    pairs2Include = pairDistanceNonPV > distanceBands(q) & pairDistanceNonPV <= distanceBands(q+1);
-    coeffNonPVMean(q) = nanmean(corrMatrixNonPV(pairs2Include));
-    coeffNonPVSEM(q) =  std(corrMatrixNonPV(pairs2Include),'omitnan')/sqrt(length(corrMatrixNonPV(pairs2Include)));
-    
-end
-
-pairDistanceNonPV_PV = pairDistance(pairwiseCellId == 1);
-corrMatrixNonPV_PV = corrMatrix(pairwiseCellId == 1);
-for q = 1:length(distanceBands)-1
-    
-    pairs2Include = pairDistanceNonPV_PV > distanceBands(q) & pairDistanceNonPV_PV <= distanceBands(q+1);
-    coeffNonPV_PVMean(q) = nanmean(corrMatrixNonPV_PV(pairs2Include));
-    coeffNonPV_PVSEM(q) =  std(corrMatrixNonPV_PV(pairs2Include),'omitnan')/sqrt(length(corrMatrixNonPV_PV(pairs2Include)));
-    
-end
-
-pairDistancePV = pairDistance(pairwiseCellId == 2);
-corrMatrixPV = corrMatrix(pairwiseCellId == 2);
-for q = 1:length(distanceBands)-1
-    
-    pairs2Include = pairDistancePV > distanceBands(q) & pairDistancePV <= distanceBands(q+1);
-    coeffPVMean(q) = nanmean(corrMatrixPV(pairs2Include));
-    coeffPVSEM(q) =  std(corrMatrixPV(pairs2Include),'omitnan')/sqrt(length(corrMatrixPV(pairs2Include)));
-    
-end
-
-
-
-%% plot
-
-figHandle= figure('units','normalized','outerposition',[0 0 1 1]);
-title('Pairwise Neuron Correlations');
-shadedErrorBarV2(50:50:450,coeffALLMean,coeffAllSEM, 'lineProps',  'k', 'DisplayName', 'All Pairs');
-hold on
-
-shadedErrorBarV2(50:50:450,coeffNonPVMean,coeffNonPVSEM, 'lineProps',  'b',  'DisplayName', 'NonPV--NonPV');
-
-shadedErrorBarV2(50:50:450,coeffNonPV_PVMean,coeffNonPV_PVSEM, 'lineProps',  'g' , 'DisplayName', 'NonPV--PV');
-
-shadedErrorBarV2(50:50:450,coeffPVMean,coeffPVSEM, 'lineProps',  'r',  'DisplayName', 'PV--PV');
-legend;
-
-xlim([0 450]);
-xlabel('Pairwise Distance (um)');
-ylabel('Pearson Correlation Coeff');
-
-tightfig;
-
-
-%% save stuff
-
-saveas(figHandle, [experimentStructure.savePath 'Pairwise Correlations.tif']);
-close;
 
 save([experimentStructure.savePath '\experimentStructure.mat'], 'experimentStructure', '-v7.3');
 

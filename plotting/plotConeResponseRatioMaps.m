@@ -1,11 +1,11 @@
 function plotConeResponseRatioMaps(filepath, thresholdZ, LMMod, S_LM_Mod)
 % Plots and saves RGB image of index preference for L vs M and S vs LM
-% response ratios (not cone contrast corrected
+% response ratios (not cone contrast corrected)
 % Input:    experimentStructure
 %           mapType- string variable of the index to use, ie 'OSI',
 %           'ratioLM', 'ratioLMS'
 
-% gets the experimentStructure
+%% gets the experimentStructure
 if ~isobject(filepath)
     try
         load(filepath, '-mat');

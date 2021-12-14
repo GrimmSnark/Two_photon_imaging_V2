@@ -22,7 +22,8 @@ function convertPixelOrientationSelectivityToCell(filepath, noOrientations, angl
 %         channel2Use: can specify channel to analyse if there are more 
 %                      than one recorded channel
 %                      (OPTIONAL) default = 2 (green channel)
-
+%
+% USAGE: convertPixelOrientationSelectivityToCell('D:\Data\2P_Data\Processed\Monkey\M10_Sully_BF797C\run_11_OIST\TSeries-04042019-0932-012\20200423154339\', 6,180,4,2);
 %% set defaults
 
 % Allows for the folder2Process to be not the one set in

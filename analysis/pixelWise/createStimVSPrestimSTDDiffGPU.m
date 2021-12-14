@@ -11,11 +11,12 @@ function [diffSTDImageSum, diffMeanImageSum,experimentStructure] = createStimVSP
 %                          window period vs prestim blank
 %         experimentStructure - modified experimentStructure
 
+%%
 if nargin<3
     channelIdentifier =[];
 end
 
-
+%%
 volGPU = gpuArray(vol);
 disp('Starting stim STD image calculation');
 

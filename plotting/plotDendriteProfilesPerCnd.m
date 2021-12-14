@@ -1,7 +1,7 @@
 function plotDendriteProfilesPerCnd(filepath, channel2Use, noOrientations, angleMax, secondCndDimension, secondCndDimensionLabels)
-% Plots images of line dynamics over average condition trials in both
-% normalized response (to the max in the recording) and log scaled image
-% responses
+% Allows user to choose dendrite ROIs and creates an
+% experimentStructure.mat for this. Then plots average responses over time
+% for each condition
 %
 % Inputs:  filepath - processed data folder containing the
 %                     experimentStructure.mat, or the fullfile to the

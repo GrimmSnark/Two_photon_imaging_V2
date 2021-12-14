@@ -1,4 +1,15 @@
 function [CorrMetrics_animal] = gatherCorrMetrics(filepaths)
+% gathers correlation metrics from all subfolders in filepath, intended for
+% each animal or subject
+%
+% Inputs: filepaths - string or cell string of mutiple folders to search
+%                     through for experimentStructures
+%
+% Outputs: CorrMetrics_animal- structure containing all correlation metrics
+%                              for the animal or subject
+%
+% USAGE : PV_Cre_tDtomato_young_M2.Filepath = [{'D:\Data\2P_Data\Processed\Mouse\gCamp6s\PV_Cre_tDtomato_young_M2\'} {'G:\dataTemp\2P_Data\Processed\Mouse\gCamp6s\PV_Cre_tDtomato_young_M2\'}];
+%         [PV_Cre_tDtomato_young_M2.corr] = gatherCorrMetrics(PV_Cre_tDtomato_young_M2.Filepath);
 
 %% load data and get metrics
 
@@ -25,6 +36,7 @@ for x = 1:length(filepaths)
         
         disp(['Sucessfully loaded ' filepathList(i).folder ' on ' num2str(i) '/' num2str(length(filepathList))]);
         
+        % if correlations field exists in the experimentStructure
         if isprop(experimentStructure, 'correlations')
             CorrMetrics = experimentStructure.correlations;
             CorrMetrics.allPairs =  CorrMetrics.allPairs';

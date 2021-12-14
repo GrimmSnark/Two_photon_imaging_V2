@@ -1,7 +1,21 @@
 function plotOrientationContrastOSIDepth(filepath, plotDiffCellTypes)
+% Plots orientation selectivity indices across recordings in the same XY
+% but across mutiple z locations for mutiple contrast levels. Also plots
+% grand OSIs across all z locations
+%
+% Inputs:  filepath - processed data folder containing the experiment day
+%                     file which contains all the z recordings
+%
+%          plotDiffCellTypes - 0/1 flag to plot PV vs non PV cells
+%                              DEFAULT = 0 (single cell type)
+%%
 
+% 1 =  'OSI_CV';
+% 2 = 'LSStruct.Peak1Width';
+% 3= 'VHStruct.OSI_PR';
+% 4= 'VHStruct.ot_index_rectified';
 
-metricNo2Use  = 3; 
+metricNo2Use  = 1; 
 
 if nargin < 2 || isempty(plotDiffCellTypes)
    plotDiffCellTypes = 0; 
@@ -44,8 +58,8 @@ end
 
 xlabel('OSI (1-CV)')
 
-saveas(f1, [ filepath '\OSI_CV_depths_PR.fig']);
-saveas(f1, [ filepath '\OSI_CV_depths_PR.png']);
+saveas(f1, [ filepath '\OSI_CV_depths.fig']);
+saveas(f1, [ filepath '\OSI_CV_depths.png']);
 
 %% set up all cells plot
 OSIMetrics_animal = [];
@@ -74,8 +88,8 @@ xlabel('OSI (1-CV)');
 title(['Number Cells = ' num2str(size(OSIMetrics_animal,1))]);
 legend
 
-saveas(f2, [filepath '\OSI_CV_all_Cells_PR.fig']);
-saveas(f2, [filepath '\OSI_CV_all_Cells_PR.png']);
+saveas(f2, [filepath '\OSI_CV_all_Cells.fig']);
+saveas(f2, [filepath '\OSI_CV_all_Cells.png']);
 
 close all
 
@@ -121,8 +135,8 @@ end
 
 xlabel('OSI (1-CV)')
 
-saveas(f1, [ filepath '\OSI_CV_depths_CellType_PR.fig']);
-saveas(f1, [ filepath '\OSI_CV_depths_CellType_PR.png']);
+saveas(f1, [ filepath '\OSI_CV_depths_CellType.fig']);
+saveas(f1, [ filepath '\OSI_CV_depths_CellType.png']);
 
 %% set up all cells plot
 OSIMetrics_animal = [];
@@ -162,8 +176,8 @@ for b = 0:1
 end
 
 
-saveas(f2, [filepath '\OSI_CV_all_Cells_CellType_PR.fig']);
-saveas(f2, [filepath '\OSI_CV_all_Cells_CellType_PR.png']);
+saveas(f2, [filepath '\OSI_CV_all_Cells_CellType.fig']);
+saveas(f2, [filepath '\OSI_CV_all_Cells_CellType.png']);
 
 close all
 end

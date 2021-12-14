@@ -1,5 +1,14 @@
 function [averageIntensity, zPos] = getDispersionIntensity(folder2Use, channel2Use)
-
+% Allows user to set background threshold to count only microbead pixels
+% and then gets an average intensity per pixel for each z position in depth
+%
+% Inputs: folder2Use - filepath to the dispersion folder to analyse
+%
+%         channel2Use - number of channel to analyse
+%
+% Outputs: averageIntensity - average pixel intensity by z slice number
+%
+%          zPos - z position in microns for each slice
 %%
 % find the z stack images
 file2Use = dir([folder2Use '**\ZS*\*\ZStack_Ch' num2str(channel2Use) '.tif']);

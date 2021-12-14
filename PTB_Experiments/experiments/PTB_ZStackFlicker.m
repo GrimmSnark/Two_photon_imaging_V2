@@ -1,5 +1,13 @@
 function PTB_ZStackFlicker(dutyCycle, stimTime, dropRed)
-
+% Flickers orientation gratings for general activation of visual cortex
+%
+% Inputs: dutyCycle - duty cycle for ON for the stimulus (0-1)
+%
+%         stimTime - stimulus time including ON and OFF in seconds
+%
+%         dropRed - 1/0 flag to drop the red channel from the stimulus and 
+%                   background as mice do not see red (1 = drop, 
+%                   0 = include red)         
 
 %% set up parameters of stimuli
 clc

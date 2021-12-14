@@ -5,7 +5,7 @@ function plotConeInputRatioMaps(filepath, thresholdZ)
 %           mapType- string variable of the index to use, ie 'OSI',
 %           'ratioLM', 'ratioLMS'
 
-% gets the experimentStructure
+%% gets the experimentStructure
 if ~isobject(filepath)
     try
         load(filepath, '-mat');

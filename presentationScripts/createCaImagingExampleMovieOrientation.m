@@ -1,5 +1,11 @@
 function createCaImagingExampleMovieOrientation(recordingDirProcessed, frameRate)
+% Creates example movie of Ca imaging 
+%
+% Input: recordingDirProcessed - processed data directory
+%
+%        frameRate - frame rate to use when creating movie
 
+%%
 orientationPNGFileLoc = 'C:\PostDoc Docs\code\matlab\Two_photon_imaging\plotting\grating_pngs\';
 
 %chooses default frame rate to save with

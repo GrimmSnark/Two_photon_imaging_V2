@@ -1,4 +1,16 @@
 function plotSigmaFromSingleGausFit(filepath, secondCndDimension)
+% Plots sigma value from LS orientation fit, ie tuning curve width for
+% cells and reates a map to save
+%
+% Inputs:  filepath - processed data folder containing the
+%                     experimentStructure.mat, or the fullfile to the
+%                     experimentStructure.mat OR the structure itself
+%
+%          secondCndDimension - number of conditions in the second
+%                               dimension, e.g. colors tested, ie 1 for
+%                               black/white, 4 monkey color paradigm, or
+%                               number of spatial frequencies etc
+%                               default = 1
 
 %% set defaults
 

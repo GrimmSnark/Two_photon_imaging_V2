@@ -1,5 +1,29 @@
 function [pDM,usefulCmbs] = compareOrientationFitsRMSE(experimentStructure, noOrientations, angleMax, secondCndDimension)
-
+% Compares orientation tuning fits for different cone color conditons to
+% see if they can fit across cone conditions
+%
+% Inputs:   experimentStructure - structure containng all the data for that
+%                                 run
+%
+%          noOrientations - number of orientations tested in the experiment
+%                          ie 4/8 etc, default = 8
+%
+%          angleMax - 360 or 180 for the Max angle tested, default = 360
+%
+%          secondCndDimension - number of conditions in the second
+%                               dimension, e.g. colors tested, ie 1 for
+%                               black/white, 4 monkey color paradigm, or
+%                               number of spatial frequencies etc
+%                               default = 1
+% 
+% Outputs: pDM - Diebold-Mariano test significance value for all
+%                comparisons (cell No x comparison No)
+%                   x < 0.05 = different fit efficiency for the tuning
+%                   curve
+%                   
+%                   x > 0.05 = similar fit properties for the comparisons
+%
+%          usefulCmbs - combination no X test pair for the fit 
 %% set defaults
 if nargin < 2 || isempty(noOrientations)
     noOrientations = 8;
